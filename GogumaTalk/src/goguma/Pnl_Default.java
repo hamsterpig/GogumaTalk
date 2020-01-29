@@ -11,12 +11,14 @@ import javax.swing.JPanel;
 public class Pnl_Default extends JPanel{
 	JPanel pnl_North, pnl_South, pnl_Center, pnl_West, pnl_East;
 	JPanel pnl_c_n, pnl_c_s, pnl_c_c;
+	
+	FontManager fontManager =FontManager.getInstance();
+	ColorManager colorManager =ColorManager.getInstance();
 
 	Pnl_Default(){
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		FontManager.getInstance();
-		ColorManager.getInstance();
+		
 		
 		this.setLayout(new BorderLayout());
 		pnl_North = new JPanel();

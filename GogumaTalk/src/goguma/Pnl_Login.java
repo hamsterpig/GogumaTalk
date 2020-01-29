@@ -7,6 +7,7 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.IOException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -34,6 +35,8 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	JButton btnLogin;
 
 	ImageIcon iconLogo;
+	
+	SocketManager soket = SocketManager.getInstance();
 
 	Pnl_Login() {
 
@@ -73,15 +76,15 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 
 		pnlSpace = new JPanel();
 		pnlSpace.setPreferredSize(new Dimension(res.width / 3, 60));
-		pnlSpace.setBackground(ColorManager.violet);
+		pnlSpace.setBackground(colorManager.violet);
 		pnl_c_c.add(pnlSpace, BorderLayout.CENTER);
 
 		pnlIDLine = new JPanel();
 		lbIDSave = new JLabel("(save)");
-		lbIDSave.setFont(FontManager.CalibriPLAIN15);
+		lbIDSave.setFont(fontManager.CalibriPLAIN15);
 		checkID = new JCheckBox();
 		lbID = new JLabel("ID");
-		lbID.setFont(FontManager.CalibriPLAIN30);
+		lbID.setFont(fontManager.CalibriPLAIN30);
 		lbID.setPreferredSize(new Dimension(130, 50));
 		tfID = new JTextField();
 		tfID.setPreferredSize(new Dimension(310, 50));
@@ -99,11 +102,11 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 
 		pnlPASSLine = new JPanel();
 		lbPASSSave = new JLabel("(save)");
-		lbPASSSave.setFont(FontManager.CalibriPLAIN15);
+		lbPASSSave.setFont(fontManager.CalibriPLAIN15);
 		checkPASS = new JCheckBox();
 		lbPASS = new JLabel("PW");
 		lbPASS.setPreferredSize(new Dimension(130, 50));
-		lbPASS.setFont(FontManager.CalibriPLAIN30);
+		lbPASS.setFont(fontManager.CalibriPLAIN30);
 		tfPASS = new JTextField();
 		tfPASS.setPreferredSize(new Dimension(310, 50));
 		pnlPASSgroup = new JPanel();
@@ -120,7 +123,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 
 		pnlForgetLine = new JPanel();
 		lbForget = new JLabel("I'mForget (ID / Password)");
-		lbForget.setFont(FontManager.CalibriUnder18);
+		lbForget.setFont(fontManager.CalibriUnder18);
 		lbForget.setForeground(Color.blue);
 		pnlForgetLine.add(lbForget);
 		pnlForgetLine.setPreferredSize(new Dimension(res.width / 3 - 50, 80));
@@ -136,6 +139,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnl_c_c.add(pnlLoginLine, BorderLayout.SOUTH);
 		
 		setTheme(Main.colorTheme); // Default Thema
+		
 	}
 	
 	private void setTheme(Color c) { // TODO Auto-generated method stub
@@ -158,9 +162,18 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnlSpace2.setBackground(c);
 	}
 
+	private void soketLogin(){
+		soket.toServ.println(tfID.getText());
+		soket.toServ.println(tfPASS.getText());
+		soket.toServ.flush();
+		revalidate();
+		repaint();
+	}
 	@Override
-	public void actionPerformed(ActionEvent arg0) {
-
+	public void actionPerformed(ActionEvent e) {
+		if(e.getSource() == btnLogin){
+			soketLogin();
+		}
 		
 	}
 }

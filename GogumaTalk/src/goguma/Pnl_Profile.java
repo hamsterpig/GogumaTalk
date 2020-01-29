@@ -1,5 +1,6 @@
 package goguma;
 
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -16,6 +17,7 @@ import javax.swing.JScrollPane;
 public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 
 	JScrollPane scList;
+	int fCNT = 0;
 
 	Pnl_Profile() {
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
@@ -37,8 +39,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnlMenu.setOpaque(true);
 
 		btnsearch = new JButton();
-		btnsearch
-				.setIcon(Function.lbImageSetSize("src/img/search.png", 60, 60));
+		btnsearch.setIcon(Function.lbImageSetSize("src/img/search.png", 60, 60));
 		btnsearch.setPreferredSize(new Dimension(60, 60));
 
 		btnaddPerson = new JButton();
@@ -65,7 +66,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		lbProfileImg.setIcon(Function.lbImageSetSize("src/img/person.png", 75,
 				75));
 		lbProfileImg.setPreferredSize(new Dimension(70, 70));
-		lbProfile.setFont(FontManager.CalibriBOLD50);
+		lbProfile.setFont(fontManager.CalibriBOLD50);
 		pnlProfileLine = new JPanel();
 		pnlProfileLine.setPreferredSize(new Dimension(res.width / 3, 80));
 		pnlProfileLine.setBackground(Color.blue);
@@ -79,16 +80,29 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnl_Center.setBackground(Color.white);
 		pnl_Center.setOpaque(true);
 		pnlList = new JPanel();
+		pnlList.setBackground(Color.white);
 		scList = new JScrollPane();
-		scList.add(pnlList);
+		scList.setViewportView(pnlList);
 		scList.getViewport().setBackground(Color.white);
+		if(fCNT == 0){
+			JLabel lbTemp = new JLabel("Please Add Friends");
+			lbTemp.setFont(fontManager.CalibriPLAIN35);
+			pnlList.add(lbTemp);
+			System.out.println("Please Add Friends");
+		}
 
 		// scList.setPreferredSize(new Dimension(res.width/3, 500));
 
 		pnl_Center.add(scList);
 		setTheme(Main.colorTheme);
+		
+		
+		//add Panel
+		
+		
+		btnLogout.addActionListener(this);
 
-	}
+	} // new 
 
 	private void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);
@@ -100,9 +114,11 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 
 	}
 
+
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 
 	}
+	
 }

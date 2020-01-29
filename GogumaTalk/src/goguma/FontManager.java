@@ -5,18 +5,14 @@ import java.awt.Font;
 public class FontManager{
 	private static FontManager instance;
 	
-	static Font CalibriPLAIN15, CalibriPLAIN20, CalibriPLAIN25;
-
-	static Font CalibriPLAIN30;
-
-	static Font CalibriPLAIN35;
-
-	static Font CalibriPLAIN50;
-	
-	static Font CalibriBOLD15, CalibriBOLD20, CalibriBOLD25,
+	Font CalibriPLAIN15, CalibriPLAIN20, CalibriPLAIN25;
+	Font CalibriPLAIN30;
+	Font CalibriPLAIN35;
+	Font CalibriPLAIN50;
+	Font CalibriBOLD15, CalibriBOLD20, CalibriBOLD25,
 	CalibriBOLD30, CalibriBOLD35, CalibriBOLD50;
-	
-	static Font CalibriUnder18;
+	Font CalibriUnder18;
+	Font GodicBOLD15, GodicBOLD20, GodicBOLD25, GodicBOLD30, GodicBOLD35, GodicBOLD40;
 	
 	private FontManager(){
 		CalibriPLAIN15 = new Font("Calibri", Font.PLAIN, 15);
@@ -34,6 +30,13 @@ public class FontManager{
 		CalibriBOLD50 = new Font("Calibri", Font.BOLD, 50);
 		
 		CalibriUnder18 = new Font("Calibri", Font.ITALIC, 18);
+		
+		GodicBOLD15 = new Font("¸¼Àº °íµñ", Font.BOLD, 15);
+		GodicBOLD20 = new Font("¸¼Àº °íµñ", Font.BOLD, 20);
+		GodicBOLD25 = new Font("¸¼Àº °íµñ", Font.BOLD, 25);
+		GodicBOLD30 = new Font("¸¼Àº °íµñ", Font.PLAIN, 30);
+		GodicBOLD35 = new Font("¸¼Àº °íµñ", Font.PLAIN, 35);
+		GodicBOLD40 = new Font("¸¼Àº °íµñ", Font.PLAIN, 40);
 		
 	}
 	

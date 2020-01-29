@@ -12,9 +12,15 @@ import javax.swing.JPanel;
 public class Pnl_SideBar extends Pnl_Default{
 	JPanel pnl, pnlProfileLine, pnlMenu, pnlUnderMenu, pnlList;
 	JLabel lbProfile, lbProfileImg;
-	JButton btnsearch, btnaddPerson, btnSetting, btnLogout, btnProfile; // menu btn
-	JButton btnChat, btnMultiChat; // underMenu btn
+	JButton btnLogout, btnsearch, btnaddPerson;
+	JButton btnProfile, btnMultiChat, btnChat, btnSetting; // underMenu btn
 	JLabel lbSpace;
+	
+	Main main;
+	Pnl_Profile pnl_Profile;
+	Pnl_Login pnl_Login;
+	Pnl_Chat pnl_Chat;
+	Pnl_SideBar pnl_SideBar;
 	
 	Pnl_SideBar(){
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
@@ -44,6 +50,9 @@ public class Pnl_SideBar extends Pnl_Default{
 		pnlUnderMenu.add(btnChat);
 		pnlUnderMenu.add(btnMultiChat);
 		pnlUnderMenu.add(btnSetting);
+		
+		
+		
 	}
 	
 }

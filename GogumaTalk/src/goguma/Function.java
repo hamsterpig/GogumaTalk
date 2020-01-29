@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 
 public class Function {
 	
+	
 	static ImageIcon imageSetSize(ImageIcon icon, int i, int j) { // image Size Setting
 		Image ximg = icon.getImage();  //ImageIcon을 Image로 변환.
 		Image yimg = ximg.getScaledInstance(i, j, java.awt.Image.SCALE_SMOOTH);
@@ -22,6 +23,7 @@ public class Function {
 		ImageIcon xyimg = new ImageIcon(yimg); 
 		return xyimg;
 	}
+	
 	
 
 }

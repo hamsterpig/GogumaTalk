@@ -23,17 +23,21 @@ public class Main extends JFrame implements ActionListener {
 	Pnl_Profile pnl_Profile;
 	Pnl_Login pnl_Login;
 	Pnl_Chat pnl_Chat;
+	Pnl_SideBar pnl_SideBar;
+	Pnl_MultiChat pnl_MultiChat;
+	Pnl_Setting pnl_Setting;
 
 	JPanel pnlMenubar;
+	static JLabel alarm;
 	static JPanel pnl;
 	
 	static Color colorTheme;
 
 	Main() {
-		FontManager.getInstance();
-		ColorManager.getInstance();
+		FontManager fontManager = FontManager.getInstance();
+		ColorManager colorManager = ColorManager.getInstance();
 		
-		colorTheme = ColorManager.kakao;
+		colorTheme = colorManager.kakao;
 
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize(); // Frame
 		// Default
@@ -49,14 +53,38 @@ public class Main extends JFrame implements ActionListener {
 		pnl_Login = new Pnl_Login();
 		pnl_Profile = new Pnl_Profile();
 		pnl_Chat = new Pnl_Chat();
+		pnl_MultiChat = new Pnl_MultiChat();
+		pnl_Setting = new Pnl_Setting();
+		
 		// ActionListener
 		pnl_Login.btnLogin.addActionListener(this);
 		pnl_Profile.btnLogout.addActionListener(this);
 		pnl_Profile.btnChat.addActionListener(this);
+		pnl_Profile.btnMultiChat.addActionListener(this);
+		pnl_Profile.btnSetting.addActionListener(this); //
+		pnl_Chat.btnProfile.addActionListener(this);
+		pnl_Chat.btnChat.addActionListener(this);
+		pnl_Chat.btnMultiChat.addActionListener(this);
+		pnl_Chat.btnSetting.addActionListener(this);
+		pnl_MultiChat.btnProfile.addActionListener(this);
+		pnl_MultiChat.btnChat.addActionListener(this);
+		pnl_MultiChat.btnMultiChat.addActionListener(this);
+		pnl_MultiChat.btnSetting.addActionListener(this);
+		pnl_Setting.btnProfile.addActionListener(this);
+		pnl_Setting.btnChat.addActionListener(this);
+		pnl_Setting.btnMultiChat.addActionListener(this);
+		pnl_Setting.btnSetting.addActionListener(this);
+		
 
 		pnlMenubar = new JPanel();
 		pnlMenubar.setPreferredSize(new Dimension(res.width / 3, 60));
 		pnlMenubar.setBackground(Color.black);
+		
+		alarm = new JLabel("");
+		alarm.setForeground(new Color(255,115,0));
+		alarm.setPreferredSize(new Dimension(res.width / 3 - 100,50));
+		alarm.setFont(fontManager.GodicBOLD25);
+		pnlMenubar.add(alarm);
 
 		pnl.add(pnlMenubar, BorderLayout.NORTH);
 		pnl.add(pnl_Login, BorderLayout.CENTER);
@@ -67,6 +95,12 @@ public class Main extends JFrame implements ActionListener {
 		setResizable(false);
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
+		
+		RecvThread recv = new RecvThread();
+		recv.start();
+		
+		
+		
 	}
 
 
@@ -97,8 +131,36 @@ public class Main extends JFrame implements ActionListener {
 			changePnl(pnl_Profile, pnl_Login);
 		} else if(e.getSource() == pnl_Profile.btnChat){
 			changePnl(pnl_Profile, pnl_Chat);
-			System.out.println("dd");
-		}
+		} else if(e.getSource() == pnl_Profile.btnMultiChat){
+			changePnl(pnl_Profile, pnl_MultiChat);
+		} else if(e.getSource() == pnl_Profile.btnProfile){ //
+			changePnl(pnl_Profile, pnl_Setting);
+		} else if(e.getSource() == pnl_Chat.btnProfile){
+			changePnl(pnl_Chat, pnl_Profile); 
+		} else if(e.getSource() == pnl_Chat.btnChat){
+			changePnl(pnl_Chat, pnl_Chat);
+		} else if(e.getSource() == pnl_Chat.btnMultiChat){
+			changePnl(pnl_Chat, pnl_MultiChat);
+		} else if(e.getSource() == pnl_Chat.btnSetting){ //
+			changePnl(pnl_Chat, pnl_Setting);
+		} else if(e.getSource() == pnl_MultiChat.btnProfile){
+			changePnl(pnl_MultiChat, pnl_Profile); 
+		} else if(e.getSource() == pnl_MultiChat.btnChat){
+			changePnl(pnl_MultiChat, pnl_Chat);
+		} else if(e.getSource() == pnl_MultiChat.btnMultiChat){
+			changePnl(pnl_MultiChat, pnl_MultiChat);
+		} else if(e.getSource() == pnl_MultiChat.btnSetting){ //
+			changePnl(pnl_MultiChat, pnl_Setting);
+		} else if(e.getSource() == pnl_Setting.btnProfile){
+			changePnl(pnl_Setting, pnl_Profile); 
+		} else if(e.getSource() == pnl_Setting.btnChat){
+			changePnl(pnl_Setting, pnl_Chat);
+		} else if(e.getSource() == pnl_Setting.btnMultiChat){
+			changePnl(pnl_Setting, pnl_MultiChat);
+		} else if(e.getSource() == pnl_Setting.btnSetting){ //
+			changePnl(pnl_Setting, pnl_Setting);
+		} 
+		
 	}
 
 }

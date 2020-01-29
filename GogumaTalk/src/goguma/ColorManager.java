@@ -5,11 +5,9 @@ import java.awt.Color;
 class ColorManager{
 	private static ColorManager instance;
 	
-	static Color kakao;
-
-	static Color violet;
-	
-	static Color violet_btn;
+	Color kakao;
+	Color violet;
+	Color violet_btn;
 	
 	private ColorManager(){
 		kakao = new Color(255, 232, 18);
