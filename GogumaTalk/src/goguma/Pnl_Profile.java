@@ -39,17 +39,17 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnlMenu.setOpaque(true);
 
 		btnsearch = new JButton();
-		btnsearch.setIcon(Function.lbImageSetSize("src/img/search.png", 60, 60));
+		btnsearch.setIcon(Function.lbImageSetSize("img/search.png", 60, 60));
 		btnsearch.setPreferredSize(new Dimension(60, 60));
 
 		btnaddPerson = new JButton();
-		btnaddPerson.setIcon(Function.lbImageSetSize("src/img/addPerson.png",
+		btnaddPerson.setIcon(Function.lbImageSetSize("img/addPerson.png",
 				60, 60));
 		btnaddPerson.setPreferredSize(new Dimension(60, 60));
 
 		btnLogout = new JButton();
 		btnLogout
-				.setIcon(Function.lbImageSetSize("src/img/logout.png", 60, 60));
+				.setIcon(Function.lbImageSetSize("img/logout.png", 60, 60));
 		btnLogout.setPreferredSize(new Dimension(60, 60));
 
 		pnlMenu.setAlignmentY(pnlMenu.CENTER_ALIGNMENT);
@@ -57,13 +57,13 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnlMenu.add(btnsearch);
 		pnlMenu.add(btnaddPerson);
 		pnlMenu.add(btnLogout);
-		// pnlMenu.add(btnSetting);
+		//pnlMenu.add(btnSetting);
 
 		pnl_North.add(pnlMenu);
 
 		lbProfile = new JLabel("Name");
 		lbProfileImg = new JLabel("IMG");
-		lbProfileImg.setIcon(Function.lbImageSetSize("src/img/person.png", 75,
+		lbProfileImg.setIcon(Function.lbImageSetSize("img/person.png", 75,
 				75));
 		lbProfileImg.setPreferredSize(new Dimension(70, 70));
 		lbProfile.setFont(fontManager.CalibriBOLD50);
@@ -88,7 +88,6 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 			JLabel lbTemp = new JLabel("Please Add Friends");
 			lbTemp.setFont(fontManager.CalibriPLAIN35);
 			pnlList.add(lbTemp);
-			System.out.println("Please Add Friends");
 		}
 
 		// scList.setPreferredSize(new Dimension(res.width/3, 500));
@@ -98,11 +97,12 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		
 		
 		//add Panel
-		
-		
 		btnLogout.addActionListener(this);
 
+
 	} // new 
+	
+	
 
 	private void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);

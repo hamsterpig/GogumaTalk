@@ -20,8 +20,8 @@ import javax.swing.UIManager;
 
 public class Main extends JFrame implements ActionListener {
 
-	Pnl_Profile pnl_Profile;
-	Pnl_Login pnl_Login;
+	static Pnl_Profile pnl_Profile;
+	static Pnl_Login pnl_Login;
 	Pnl_Chat pnl_Chat;
 	Pnl_SideBar pnl_SideBar;
 	Pnl_MultiChat pnl_MultiChat;
@@ -61,7 +61,7 @@ public class Main extends JFrame implements ActionListener {
 		pnl_Profile.btnLogout.addActionListener(this);
 		pnl_Profile.btnChat.addActionListener(this);
 		pnl_Profile.btnMultiChat.addActionListener(this);
-		pnl_Profile.btnSetting.addActionListener(this); //
+		pnl_Profile.btnSetting.addActionListener(this);
 		pnl_Chat.btnProfile.addActionListener(this);
 		pnl_Chat.btnChat.addActionListener(this);
 		pnl_Chat.btnMultiChat.addActionListener(this);
@@ -74,7 +74,6 @@ public class Main extends JFrame implements ActionListener {
 		pnl_Setting.btnChat.addActionListener(this);
 		pnl_Setting.btnMultiChat.addActionListener(this);
 		pnl_Setting.btnSetting.addActionListener(this);
-		
 
 		pnlMenubar = new JPanel();
 		pnlMenubar.setPreferredSize(new Dimension(res.width / 3, 60));
@@ -96,7 +95,7 @@ public class Main extends JFrame implements ActionListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		
-		RecvThread recv = new RecvThread();
+		RecvThread recv = new RecvThread(new ServerMsg(pnl_Chat));
 		recv.start();
 		
 		
@@ -116,11 +115,17 @@ public class Main extends JFrame implements ActionListener {
 		new Main();
 	}
 	
-	private void changePnl(JPanel p1, JPanel p2){
+	private static void changePnl(JPanel p1, JPanel p2){
 		Main.pnl.remove(p1);
 		Main.pnl.add(p2, BorderLayout.CENTER);
-		revalidate();
-		repaint();
+		Main.pnl.revalidate();
+		Main.pnl.repaint();
+	}
+	
+	static public void quit(){
+		alarm.setText("ID or PASSWORD is Invalid");
+		alarm.setForeground(Color.red);
+		changePnl(pnl_Profile, pnl_Login);
 	}
 
 	@Override
@@ -133,7 +138,7 @@ public class Main extends JFrame implements ActionListener {
 			changePnl(pnl_Profile, pnl_Chat);
 		} else if(e.getSource() == pnl_Profile.btnMultiChat){
 			changePnl(pnl_Profile, pnl_MultiChat);
-		} else if(e.getSource() == pnl_Profile.btnProfile){ //
+		} else if(e.getSource() == pnl_Profile.btnSetting){ //
 			changePnl(pnl_Profile, pnl_Setting);
 		} else if(e.getSource() == pnl_Chat.btnProfile){
 			changePnl(pnl_Chat, pnl_Profile); 

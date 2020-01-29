@@ -63,10 +63,13 @@ public class Pnl_Chat extends Pnl_SideBar{
 
 	private void updateRoom() {
 		// TODO Auto-generated method stub
-		System.out.println(chatRoom.size());
 		for(int i=0; i<chatRoom.size(); i++){
 			pnlList.add(chatRoom.get(i));
 			rCNT++;
 		}
+	}
+	
+	public void update(String name, String msg){
+		
 	}
 }

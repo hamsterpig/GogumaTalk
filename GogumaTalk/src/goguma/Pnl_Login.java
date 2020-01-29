@@ -64,7 +64,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnlSpace2.setPreferredSize(new Dimension(res.width, 50));
 		pnl_c_n.add(pnlSpace2);
 
-		iconLogo = new ImageIcon("src/img/logo.png");
+		iconLogo = new ImageIcon("img/logo.png");
 		lbImg = new JLabel("Logo Img");
 		lbImg.setOpaque(false);
 		lbImg.setHorizontalAlignment(lbImg.CENTER);
@@ -173,6 +173,8 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnLogin){
 			soketLogin();
+			Main.alarm.setText(tfID.getText()+" ´Ô ¹Ý°©½À´Ï´Ù!");
+			Main.alarm.setForeground(Color.gray);
 		}
 		
 	}

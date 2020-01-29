@@ -6,27 +6,33 @@ public class RecvThread extends Thread{
 	boolean isOn = true;
 	
 	SocketManager soket = SocketManager.getInstance();
-	ServerMsg serverMsg = ServerMsg.getInstance();
+	ServerMsg serverMsg;
+	
+	RecvThread(ServerMsg serverMsg){
+		this.serverMsg = serverMsg;
+	}
 	
 	@Override
 	public void run() {
 		// TODO Auto-generated method stub
-		System.out.println("dd");
 		while(isOn){
 			try {
 				String temp;
-				
-				Thread.sleep(1000);
-				temp = soket.fromServ.readLine();
-				
-				serverMsg.process(temp.split(" ", 2));
 
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
+				temp = soket.fromServ.readLine();
+				System.out.println(temp);
+				serverMsg.process(temp.split(" ", 2));
 			} catch (IOException e) {
-				// TODO Auto-generated catch block
 				e.printStackTrace();
+			} catch (Exception e){
+				try {
+					soket.fromServ.close();
+					isOn = false;
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+					isOn = false;
+				}
 			}
 			
 		}

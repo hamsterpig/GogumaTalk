@@ -30,19 +30,19 @@ public class Pnl_SideBar extends Pnl_Default{
 		pnl_South.add(pnlUnderMenu);
 		
 		btnProfile = new JButton();
-		btnProfile.setIcon(Function.lbImageSetSize("src/img/person.png", 60, 60));
+		btnProfile.setIcon(Function.lbImageSetSize("img/person.png", 60, 60));
 		btnProfile.setPreferredSize(new Dimension(60,60));
 		
 		btnChat = new JButton();
-		btnChat.setIcon(Function.lbImageSetSize("src/img/chatting.png", 60, 60));
+		btnChat.setIcon(Function.lbImageSetSize("img/chatting.png", 60, 60));
 		btnChat.setPreferredSize(new Dimension(60,60));
 		
 		btnSetting = new JButton();
-		btnSetting.setIcon(Function.lbImageSetSize("src/img/setting.png", 60, 60));
+		btnSetting.setIcon(Function.lbImageSetSize("img/setting.png", 60, 60));
 		btnSetting.setPreferredSize(new Dimension(60,60));
 		
 		btnMultiChat = new JButton();
-		btnMultiChat.setIcon(Function.lbImageSetSize("src/img/multiChat.png", 60, 60));
+		btnMultiChat.setIcon(Function.lbImageSetSize("img/multiChat.png", 60, 60));
 		btnMultiChat.setPreferredSize(new Dimension(60,60));
 		
 		pnlUnderMenu.setBackground(new Color(255,180,180));

@@ -27,7 +27,7 @@ public class Pnl_ChatRoom extends JPanel implements MouseListener{
 		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		
 		lbIMG = new JLabel();
-		lbIMG.setIcon(Function.lbImageSetSize("src/img/person.png", 60, 60));
+		lbIMG.setIcon(Function.lbImageSetSize("img/person.png", 60, 60));
 		lbIMG.setPreferredSize(new Dimension(60, 60));
 		lbIMG.setBackground(new Color(240,240,240));
 		lbIMG.setOpaque(true);

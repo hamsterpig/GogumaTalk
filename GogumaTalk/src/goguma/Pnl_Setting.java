@@ -1,16 +1,31 @@
 package goguma;
 
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.Toolkit;
+
 import javax.swing.JLabel;
+import javax.swing.JPanel;
 
 public class Pnl_Setting extends Pnl_SideBar{
 	JLabel lbTitle;
 	
 	Pnl_Setting(){
+		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
+		
 		btnSetting.setBackground(Main.colorTheme);
 		
 		lbTitle = new JLabel();
 		lbTitle.setText("Setting");
 		lbTitle.setFont(fontManager.CalibriBOLD50);
 		pnl_North.add(lbTitle);
+		
+		pnl_c_c.setBackground(Color.LIGHT_GRAY);
+		pnl_c_c.setPreferredSize(new Dimension(res.width/3,710));
+		
+		JPanel pnlalarmLine = new JPanel();
+		pnlalarmLine.setBackground(Color.blue);
+		pnlalarmLine.setPreferredSize(new Dimension(res.width/3,60));
+		
 	}
 }
