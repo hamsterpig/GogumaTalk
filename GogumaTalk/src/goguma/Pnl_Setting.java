@@ -23,9 +23,11 @@ public class Pnl_Setting extends Pnl_SideBar{
 		pnl_c_c.setBackground(Color.LIGHT_GRAY);
 		pnl_c_c.setPreferredSize(new Dimension(res.width/3,710));
 		
-		JPanel pnlalarmLine = new JPanel();
-		pnlalarmLine.setBackground(Color.blue);
-		pnlalarmLine.setPreferredSize(new Dimension(res.width/3,60));
+		JPanel pnlAlarmLine = new JPanel();
+		pnlAlarmLine.setBackground(Color.blue);
+		pnlAlarmLine.setPreferredSize(new Dimension(res.width/3,60));
+		pnl_c_c.add(pnlAlarmLine);
+		
 		
 	}
 }

@@ -84,6 +84,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		scList = new JScrollPane();
 		scList.setViewportView(pnlList);
 		scList.getViewport().setBackground(Color.white);
+		
 		if(fCNT == 0){
 			JLabel lbTemp = new JLabel("Please Add Friends");
 			lbTemp.setFont(fontManager.CalibriPLAIN35);
@@ -119,6 +120,6 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 
-	}
 	
+	}
 }

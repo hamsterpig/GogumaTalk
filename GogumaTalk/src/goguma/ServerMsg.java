@@ -19,33 +19,22 @@ public class ServerMsg {
 		
 		switch(split[0]){
 			case "/alarm": alarm(split[1]); break;
-			case "/reduplication": reduplication(split[0]);; break;
+			case "/reduplication": reduplication	(split[0]);; break;
 			case "/possible": possible(split[0]);; break;
 			case "/impossible": impossible(split[0]);; break;
 		}
 		
-		
-/*		if(split[0].equals("/alarm")){
-			alarm(split[1]);
-		} else if(split[0].equals("/reduplication")){
-			reduplication(split[0]);
-		} else if(split[0].equals("/possible")){
-			possible(split[0]);
-		} else if(split[0].equals("/impossible")){
-			impossible(split[0]);
-			
-		}*/
 	} // process
 
 	private void impossible(String s) {
-		// TODO Auto-generated method stub
+
 		Main.isLogin = false;
 		Main.alarm.setText("ID or PASSWORD is Invalid");
 		Main.alarm.setForeground(Color.red);
 	}
 
 	private void possible(String s) {
-		// TODO Auto-generated method stub
+		
 		Main.isLogin = true;
 		
 		Main.alarm.setText(Pnl_Login.tfID.getText()+" ´Ô ¹Ý°©½À´Ï´Ù ^^");
@@ -57,19 +46,19 @@ public class ServerMsg {
 	}
 
 	private void reduplication(String s) {
-		// TODO Auto-generated method stub
+
 		Main.alarm.setText("ID already connected");
 		Main.alarm.setForeground(Color.red);
 		try {
 			soket.fromServ.close();
 		} catch (IOException e) {
-			// TODO Auto-generated catch block
+
 			e.printStackTrace();
 		}
 	}
 
 	private void alarm(String s) {
-		// TODO Auto-generated method stub
+
 		Main.alarm.setText(s);
 		Main.alarm.setForeground(Color.orange);
 		AlarmThread aTread = new AlarmThread();

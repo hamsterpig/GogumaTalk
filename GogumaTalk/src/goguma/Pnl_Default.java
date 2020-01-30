@@ -18,8 +18,6 @@ public class Pnl_Default extends JPanel{
 	Pnl_Default(){
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		
-		
 		this.setLayout(new BorderLayout());
 		pnl_North = new JPanel();
 		pnl_South = new JPanel();

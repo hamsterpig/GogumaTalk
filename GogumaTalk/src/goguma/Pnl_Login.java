@@ -12,7 +12,9 @@ import java.io.IOException;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -21,23 +23,18 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	JPanel pnl, pnl_n, pnl_s, pnl_c, pnl_w, pnl_e;
 	JPanel pnl_c_n, pnl_c_s, pnl_c_c;
 	JPanel pnlSpace, pnlSpace2;
-
 	JPanel pnlIDLine, pnlPASSLine, pnlLoginLine, pnlForgetLine;
 	JPanel pnlIDgroup, pnlPASSgroup;
-
 	JLabel lbID, lbPASS, lbImg, lbForget;
 	JLabel lbIDSave, lbPASSSave;
-
 	static JTextField tfID;
 	JTextField tfPASS;
-
 	JCheckBox checkID, checkPASS;
-
-	JButton btnLogin;
-
+	JButton btnLogin, btnSignUp;
 	ImageIcon iconLogo;
-	
+
 	SocketManager soket = SocketManager.getInstance();
+	Dialog_SignUp dialog_SignUp;
 
 	Pnl_Login() {
 
@@ -123,7 +120,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnl_c_c.add(pnlPASSLine, BorderLayout.CENTER);
 
 		pnlForgetLine = new JPanel();
-		lbForget = new JLabel("I'mForget (ID / Password)");
+		lbForget = new JLabel("I'm Forget (ID / Password)");
 		lbForget.setFont(fontManager.CalibriUnder18);
 		lbForget.setForeground(Color.blue);
 		pnlForgetLine.add(lbForget);
@@ -135,9 +132,15 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		btnLogin = new JButton("Login");
 		btnLogin.setPreferredSize(new Dimension(350, 80));
 		btnLogin.addActionListener(this);
+		btnLogin.setFont(fontManager.CalibriBOLD35);
+		btnLogin.setForeground(Color.white);
 		pnlLoginLine.add(btnLogin);
 		pnlLoginLine.setPreferredSize(new Dimension(res.width / 3 - 50, 100));
 		pnl_c_c.add(pnlLoginLine, BorderLayout.SOUTH);
+		
+		btnSignUp = new JButton("SingUp");
+		btnSignUp.addActionListener(this);
+		pnl_c_c.add(btnSignUp);
 		
 		setTheme(Main.colorTheme); // Default Thema
 		
@@ -172,7 +175,21 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnLogin){
-			soketLoginTry();
+			if(tfID.getText().equals("") || tfID.getText()==null){
+				JOptionPane.showMessageDialog(null, "Please enter your ID.", "Warning", JOptionPane.WARNING_MESSAGE);
+			} else if(tfPASS.getText().equals("") || tfPASS.getText()==null){
+				JOptionPane.showMessageDialog(null, "Please enter your Password.", "Warning", JOptionPane.WARNING_MESSAGE);
+			} else {
+				soketLoginTry();
+			}
+			
+		} else if(e.getSource()==btnSignUp){
+			if(dialog_SignUp==null){
+				dialog_SignUp = new Dialog_SignUp();
+				dialog_SignUp.setVisible(true);
+			} else{
+				dialog_SignUp.setVisible(true);
+			}
 		}
 	}
 }

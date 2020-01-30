@@ -11,15 +11,17 @@ import java.net.UnknownHostException;
 public class SocketManager {
 	
 	private static SocketManager instance;
-	static final String IP = "192.168.100.220"; // g
-	//static final String IP = "192.168.100.211"; // j 
+	//static final String IP = "192.168.100.220"; // g
+	static final String IP = "192.168.100.211"; // j
+	//static final String IP = "192.168.100.170"; // my
+	
 	private Socket sock;
 	public PrintWriter toServ;
 	public BufferedReader fromServ;
 	
 	private SocketManager(){
 		try {
-			sock = new Socket(IP, 10001);
+			sock = new Socket(IP, 9876);
 			toServ = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			fromServ = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		} catch (UnknownHostException e) {

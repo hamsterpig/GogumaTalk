@@ -146,10 +146,8 @@ public class Main extends JFrame implements ActionListener {
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
-		if(e.getSource() == pnl_Login.btnLogin){
-			if(isLogin==true){
+		if(e.getSource() == pnl_Login.btnLogin && isLogin==true){ // Login
 				changePnl(pnl_Login, pnl_Profile);
-			}
 		} else if(e.getSource() == pnl_Profile.btnLogout){
 			changePnl(pnl_Profile, pnl_Login);
 		} else if(e.getSource() == pnl_Profile.btnChat){
