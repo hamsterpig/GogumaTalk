@@ -28,7 +28,8 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	JLabel lbID, lbPASS, lbImg, lbForget;
 	JLabel lbIDSave, lbPASSSave;
 
-	JTextField tfID, tfPASS;
+	static JTextField tfID;
+	JTextField tfPASS;
 
 	JCheckBox checkID, checkPASS;
 
@@ -157,14 +158,13 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnlPASSgroup.setBackground(c);
 		pnlPASSLine.setBackground(c);
 		pnlForgetLine.setBackground(c);
-		btnLogin.setBackground(c);
+		btnLogin.setBackground(new Color(50,30,30));
 		pnlLoginLine.setBackground(c);
 		pnlSpace2.setBackground(c);
 	}
 
-	private void soketLogin(){
-		soket.toServ.println(tfID.getText());
-		soket.toServ.println(tfPASS.getText());
+	private void soketLoginTry(){
+		soket.toServ.println("/log " + tfID.getText() + " " + tfPASS.getText());
 		soket.toServ.flush();
 		revalidate();
 		repaint();
@@ -172,10 +172,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnLogin){
-			soketLogin();
-			Main.alarm.setText(tfID.getText()+" ´Ô ¹Ý°©½À´Ï´Ù!");
-			Main.alarm.setForeground(Color.gray);
+			soketLoginTry();
 		}
-		
 	}
 }

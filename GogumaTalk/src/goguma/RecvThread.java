@@ -18,24 +18,17 @@ public class RecvThread extends Thread{
 		while(isOn){
 			try {
 				String temp;
-
 				temp = soket.fromServ.readLine();
 				System.out.println(temp);
-				serverMsg.process(temp.split(" ", 2));
+				serverMsg.process(temp.split(" "));
 			} catch (IOException e) {
-				e.printStackTrace();
+				
 			} catch (Exception e){
-				try {
-					soket.fromServ.close();
-					isOn = false;
-				} catch (IOException e1) {
-					// TODO Auto-generated catch block
-					e1.printStackTrace();
-					isOn = false;
-				}
+				//soket.fromServ.close();
 			}
-			
 		}
+		
+		isOn = true;
 		System.out.println("Server Thread Exit");
 		
 	}

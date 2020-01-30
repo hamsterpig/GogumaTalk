@@ -22,17 +22,21 @@ public class Main extends JFrame implements ActionListener {
 
 	static Pnl_Profile pnl_Profile;
 	static Pnl_Login pnl_Login;
-	Pnl_Chat pnl_Chat;
+	static Pnl_Chat pnl_Chat;
 	Pnl_SideBar pnl_SideBar;
 	Pnl_MultiChat pnl_MultiChat;
 	Pnl_Setting pnl_Setting;
 
-	JPanel pnlMenubar;
-	static JLabel alarm;
+	static JPanel pnlMenubar;
+	static JLabel alarm, alarmSpace;
 	static JPanel pnl;
 	
 	static Color colorTheme;
 
+	static RecvThread recv;
+	
+	static boolean isLogin = false;
+	
 	Main() {
 		FontManager fontManager = FontManager.getInstance();
 		ColorManager colorManager = ColorManager.getInstance();
@@ -78,11 +82,20 @@ public class Main extends JFrame implements ActionListener {
 		pnlMenubar = new JPanel();
 		pnlMenubar.setPreferredSize(new Dimension(res.width / 3, 60));
 		pnlMenubar.setBackground(Color.black);
+		pnlMenubar.setLayout(new FlowLayout(FlowLayout.LEADING));
+		
+		alarmSpace = new JLabel();
+		alarmSpace.setPreferredSize(new Dimension(res.width / 3 - 620 ,50));
+		//alarmSpace.setBackground(Color.red);
+	//	alarmSpace.setOpaque(true);
+		pnlMenubar.add(alarmSpace);
 		
 		alarm = new JLabel("");
 		alarm.setForeground(new Color(255,115,0));
 		alarm.setPreferredSize(new Dimension(res.width / 3 - 100,50));
 		alarm.setFont(fontManager.GodicBOLD25);
+	//	alarm.setBackground(Color.yellow);
+	//	alarm.setOpaque(true);
 		pnlMenubar.add(alarm);
 
 		pnl.add(pnlMenubar, BorderLayout.NORTH);
@@ -95,11 +108,11 @@ public class Main extends JFrame implements ActionListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		
-		RecvThread recv = new RecvThread(new ServerMsg(pnl_Chat));
+		recv = new RecvThread(new ServerMsg(pnl_Chat));
 		recv.start();
 		
 		
-		
+			
 	}
 
 
@@ -107,31 +120,36 @@ public class Main extends JFrame implements ActionListener {
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try {
-			UIManager
-					.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
 			System.out.println("ERROR");
 		}
 		new Main();
 	}
 	
-	private static void changePnl(JPanel p1, JPanel p2){
+	static void changePnl(JPanel p1, JPanel p2){
 		Main.pnl.remove(p1);
 		Main.pnl.add(p2, BorderLayout.CENTER);
 		Main.pnl.revalidate();
 		Main.pnl.repaint();
 	}
 	
-	static public void quit(){
-		alarm.setText("ID or PASSWORD is Invalid");
+/*	static public void quit(){
+		alarm.setText("Exit");
 		alarm.setForeground(Color.red);
 		changePnl(pnl_Profile, pnl_Login);
-	}
+		recv.stop();
+		recv.interrupt();
+		recv = new RecvThread(new ServerMsg(pnl_Chat));
+		recv.start();
+	}*/
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == pnl_Login.btnLogin){
-			changePnl(pnl_Login, pnl_Profile);
+			if(isLogin==true){
+				changePnl(pnl_Login, pnl_Profile);
+			}
 		} else if(e.getSource() == pnl_Profile.btnLogout){
 			changePnl(pnl_Profile, pnl_Login);
 		} else if(e.getSource() == pnl_Profile.btnChat){

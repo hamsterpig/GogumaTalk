@@ -11,7 +11,8 @@ import java.net.UnknownHostException;
 public class SocketManager {
 	
 	private static SocketManager instance;
-	static final String IP = "192.168.100.220";
+	static final String IP = "192.168.100.220"; // g
+	//static final String IP = "192.168.100.211"; // j 
 	private Socket sock;
 	public PrintWriter toServ;
 	public BufferedReader fromServ;
