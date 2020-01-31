@@ -39,6 +39,8 @@ public class ServerMsg {
 		Main.isLogin = false;
 		Main.alarm.setText("ID or PASSWORD is Invalid");
 		Main.alarm.setForeground(Color.red);
+		Pnl_Login.lbMSG.setText("Forget (ID or Password)?");
+		Pnl_Login.lbMSG.setForeground(Color.red);
 	}
 
 	private void possible(String s) {
@@ -52,6 +54,8 @@ public class ServerMsg {
 
 		Main.alarm.setText("ID already connected");
 		Main.alarm.setForeground(Color.red);
+		Pnl_Login.lbMSG.setText("Please Logout First ID ");
+		Pnl_Login.lbMSG.setForeground(Color.red);
 
 	}
 

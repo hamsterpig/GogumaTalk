@@ -28,7 +28,8 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 	JPanel pnlSpace, pnlSpace2;
 	JPanel pnlIDLine, pnlPASSLine, pnlLoginLine, pnlForgetLine;
 	JPanel pnlIDgroup, pnlPASSgroup;
-	JLabel lbID, lbPASS, lbImg, lbForget;
+	JLabel lbID, lbPASS, lbImg;
+	static JLabel lbMSG;
 	JLabel lbIDSave, lbPASSSave;
 	static JTextField tfID;
 	static JTextField tfPASS;
@@ -123,10 +124,10 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 		pnl_c_c.add(pnlPASSLine, BorderLayout.CENTER);
 
 		pnlForgetLine = new JPanel();
-		lbForget = new JLabel("I'm Forget (ID / Password)");
-		lbForget.setFont(fontManager.CalibriUnder18);
-		lbForget.setForeground(Color.blue);
-		pnlForgetLine.add(lbForget);
+		lbMSG = new JLabel("I'm Forget (ID / Password) ?");
+		lbMSG.setFont(fontManager.CalibriUnder18);
+		lbMSG.setForeground(Color.blue);
+		pnlForgetLine.add(lbMSG);
 		pnlForgetLine.setPreferredSize(new Dimension(640 - 50, 80));
 		pnlForgetLine.setForeground(Color.blue);
 		pnl_c_c.add(pnlForgetLine);
@@ -143,7 +144,10 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 		
 		btnSignUp = new JButton("SingUp");
 		btnSignUp.addActionListener(this);
-		btnSignUp.setBackground(new Color(70,255,70));
+		btnSignUp.setBackground(new Color(50,50,255));
+		btnSignUp.setPreferredSize(new Dimension(150,40));
+		btnSignUp.setForeground(Color.white);
+		btnSignUp.setFont(fontManager.CalibriBOLD20);
 		pnl_c_c.add(btnSignUp);
 		
 		setTheme(Main.colorTheme); // Default Thema
@@ -158,6 +162,8 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 		pnl_c.addKeyListener(this);
 		checkID.addKeyListener(this);
 		checkPASS.addKeyListener(this);
+		
+		btnLogin.setEnabled(false);
 	}
 	
 	private void getSave_ID_PASS() {
@@ -281,9 +287,23 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
 		Main.soket = SocketManager.getInstance();
+		
 		if(e.getKeyCode()==10){
 			soketLoginTry();
 		}
+		
+		if(!tfID.getText().equals("")  && tfPASS.getText().equals("") 
+				|| tfID != null && tfPASS.getText().equals("")){
+			lbMSG.setText("Need -> Input Password");
+			lbMSG.setForeground(Color.blue);
+			System.out.println("dd");
+		} else if(!tfPASS.getText().equals("") || tfPASS != null){
+			lbMSG.setText("Need -> Login Click or Enter Key");
+			lbMSG.setForeground(Color.blue);
+			btnLogin.setEnabled(true);
+		}
+		
+		
 	}
 
 	@Override

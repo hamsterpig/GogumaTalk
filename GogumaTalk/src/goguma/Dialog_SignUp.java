@@ -99,7 +99,7 @@ public class Dialog_SignUp  extends JDialog implements ActionListener, KeyListen
 		setResizable(false);
 		pack();
 		
-		setTheme(new Color(210,210,255));
+		setTheme(new Color(255,210,210));
 		
 		txID_Check.addKeyListener(this);
 		txpass_Check.addKeyListener(this);
