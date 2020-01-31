@@ -7,7 +7,10 @@ import java.awt.FlowLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
 import java.io.IOException;
+import java.rmi.ConnectException;
 
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
@@ -18,7 +21,7 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Pnl_Login extends Pnl_Default implements ActionListener{
+public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListener{
 
 	JPanel pnl, pnl_n, pnl_s, pnl_c, pnl_w, pnl_e;
 	JPanel pnl_c_n, pnl_c_s, pnl_c_c;
@@ -28,12 +31,12 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	JLabel lbID, lbPASS, lbImg, lbForget;
 	JLabel lbIDSave, lbPASSSave;
 	static JTextField tfID;
-	JTextField tfPASS;
+	static JTextField tfPASS;
 	JCheckBox checkID, checkPASS;
-	JButton btnLogin, btnSignUp;
+	static JButton btnLogin;
+	static JButton btnSignUp;
 	ImageIcon iconLogo;
 
-	SocketManager soket = SocketManager.getInstance();
 	Dialog_SignUp dialog_SignUp;
 
 	Pnl_Login() {
@@ -55,7 +58,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize(); // Frame
 																		// Default
 																		// Size
-		this.setSize(res.width / 3, res.height - 100);
+		this.setSize(640, 1080 - 100);
 
 		//
 		pnlSpace2 = new JPanel();
@@ -69,11 +72,11 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		lbImg.setPreferredSize(new Dimension(250, 250));
 		lbImg.setIcon(Function.imageSetSize(iconLogo, 250, 250));
 		pnl_c_n.add(lbImg, BorderLayout.NORTH);
-		pnl_c_n.setPreferredSize(new Dimension(res.width / 3, 330));
+		pnl_c_n.setPreferredSize(new Dimension(640, 330));
 		pnl_c.add(pnl_c_n, BorderLayout.NORTH);
 
 		pnlSpace = new JPanel();
-		pnlSpace.setPreferredSize(new Dimension(res.width / 3, 60));
+		pnlSpace.setPreferredSize(new Dimension(640, 60));
 		pnlSpace.setBackground(colorManager.violet);
 		pnl_c_c.add(pnlSpace, BorderLayout.CENTER);
 
@@ -94,7 +97,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnlIDLine.add(tfID);
 		pnlIDLine.add(pnlIDgroup);
 		pnlIDLine.setOpaque(true);
-		pnlIDLine.setPreferredSize(new Dimension((res.width / 3) - 50, 100));
+		pnlIDLine.setPreferredSize(new Dimension((640) - 50, 100));
 		pnlIDLine.setLayout(new FlowLayout(FlowLayout.LEADING));
 		pnl_c_c.add(pnlIDLine, BorderLayout.CENTER);
 
@@ -115,7 +118,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		pnlPASSLine.add(tfPASS);
 		pnlPASSLine.add(pnlPASSgroup);
 		pnlPASSLine.setOpaque(true);
-		pnlPASSLine.setPreferredSize(new Dimension((res.width / 3) - 50, 100));
+		pnlPASSLine.setPreferredSize(new Dimension((640) - 50, 100));
 		pnlPASSLine.setLayout(new FlowLayout(FlowLayout.LEADING));
 		pnl_c_c.add(pnlPASSLine, BorderLayout.CENTER);
 
@@ -124,7 +127,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		lbForget.setFont(fontManager.CalibriUnder18);
 		lbForget.setForeground(Color.blue);
 		pnlForgetLine.add(lbForget);
-		pnlForgetLine.setPreferredSize(new Dimension(res.width / 3 - 50, 80));
+		pnlForgetLine.setPreferredSize(new Dimension(640 - 50, 80));
 		pnlForgetLine.setForeground(Color.blue);
 		pnl_c_c.add(pnlForgetLine);
 
@@ -135,17 +138,53 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 		btnLogin.setFont(fontManager.CalibriBOLD35);
 		btnLogin.setForeground(Color.white);
 		pnlLoginLine.add(btnLogin);
-		pnlLoginLine.setPreferredSize(new Dimension(res.width / 3 - 50, 100));
+		pnlLoginLine.setPreferredSize(new Dimension(640 - 50, 100));
 		pnl_c_c.add(pnlLoginLine, BorderLayout.SOUTH);
 		
 		btnSignUp = new JButton("SingUp");
 		btnSignUp.addActionListener(this);
+		btnSignUp.setBackground(new Color(70,255,70));
 		pnl_c_c.add(btnSignUp);
 		
 		setTheme(Main.colorTheme); // Default Thema
 		
+		getSave_ID_PASS();
+		
+		tfID.addKeyListener(this);
+		tfPASS.addKeyListener(this);
+		pnl_c_c.addKeyListener(this);
+		pnl_c_n.addKeyListener(this);
+		pnl_c_s.addKeyListener(this);
+		pnl_c.addKeyListener(this);
+		checkID.addKeyListener(this);
+		checkPASS.addKeyListener(this);
 	}
 	
+	private void getSave_ID_PASS() {
+		// TODO Auto-generated method stub
+		String tempID, tempPASS;
+		tempID = Static_FileInOutStream.fileRead("data/SaveID.txt");
+		tempPASS = Static_FileInOutStream.fileRead("data/SavePASS.txt");
+		
+		if(!tempID.equals("") || tempID!=null){
+			tempID = tempID.replace(" ", "");
+			tfID.setText(tempID);
+			checkID.setSelected(true);
+		}
+		if(!tempPASS.equals("") || tempPASS!=null){
+			tempID = tempID.replace(" ", "");
+			tfPASS.setText(tempPASS);
+			checkPASS.setSelected(true);
+		}
+		
+		if(tfID.getText().equals("")){
+			checkID.setSelected(false);
+		}
+		if(tfPASS.getText().equals("")){
+			checkPASS.setSelected(false);
+		}
+	}
+
 	private void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);
 		pnl_s.setBackground(c);
@@ -167,10 +206,20 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 	}
 
 	private void soketLoginTry(){
-		soket.toServ.println("/log " + tfID.getText() + " " + tfPASS.getText());
-		soket.toServ.flush();
+		Main.alarm.setText("Unable to connect to the server.");
+		Main.alarm.setBackground(Color.red);
+
+		Main.soket = SocketManager.getInstance();
+		String tempID = tfID.getText().replace(" ", "");
+		String tempPASS = tfPASS.getText().replace(" ", "");
+		Main.soket.toServ.println("/log " + tempID + " " + tempPASS);
+		Main.soket.toServ.flush();
 		revalidate();
 		repaint();
+
+		
+		
+		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -183,13 +232,69 @@ public class Pnl_Login extends Pnl_Default implements ActionListener{
 				soketLoginTry();
 			}
 			
+			checkBox_ID_PASS();
+			
+			
 		} else if(e.getSource()==btnSignUp){
 			if(dialog_SignUp==null){
+				enabled(false);
 				dialog_SignUp = new Dialog_SignUp();
 				dialog_SignUp.setVisible(true);
 			} else{
+				Dialog_SignUp.lbMSG.setText("Please Enter ID");
+				Dialog_SignUp.lbMSG.setForeground(Color.gray);
 				dialog_SignUp.setVisible(true);
+				enabled(false);
 			}
 		}
+	}
+
+	static public void enabled(boolean b) {
+		// TODO Auto-generated method stub
+		tfID.setEnabled(b);
+		tfPASS.setEnabled(b);
+		btnLogin.setEnabled(b);
+		btnSignUp.setEnabled(b);
+	}
+
+	private void checkBox_ID_PASS() {
+		// TODO Auto-generated method stub
+		if(checkID.isSelected()==true){
+			String temp;
+			temp = tfID.getText().replace(" ", "");
+			Static_FileInOutStream.fileWrite("data/SaveID.txt", temp);
+		}
+		if(checkPASS.isSelected()==true){
+			String temp;
+			temp = tfPASS.getText().replace(" ", "");
+			Static_FileInOutStream.fileWrite("data/SavePASS.txt", temp);
+		}
+		if(checkID.isSelected()==false){
+			Static_FileInOutStream.fileWrite("data/SaveID.txt", "");
+		}
+		if(checkPASS.isSelected()==false){
+			Static_FileInOutStream.fileWrite("data/SavePASS.txt", "");
+		}
+	}
+
+	@Override
+	public void keyPressed(KeyEvent e) {
+		// TODO Auto-generated method stub
+		Main.soket = SocketManager.getInstance();
+		if(e.getKeyCode()==10){
+			soketLoginTry();
+		}
+	}
+
+	@Override
+	public void keyReleased(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void keyTyped(KeyEvent e) {
+		// TODO Auto-generated method stub
+		
 	}
 }

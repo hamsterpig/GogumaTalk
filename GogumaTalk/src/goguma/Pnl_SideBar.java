@@ -10,7 +10,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 
 public class Pnl_SideBar extends Pnl_Default{
-	JPanel pnl, pnlProfileLine, pnlMenu, pnlUnderMenu, pnlList;
+	JPanel pnl, pnlProfileLine, pnlMenu, pnlUnderMenu;
 	JLabel lbProfile, lbProfileImg;
 	JButton btnLogout, btnsearch, btnaddPerson;
 	JButton btnProfile, btnMultiChat, btnChat, btnSetting; // underMenu btn
@@ -26,7 +26,7 @@ public class Pnl_SideBar extends Pnl_Default{
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
 		pnlUnderMenu = new JPanel(new GridLayout(1,0));
-		pnlUnderMenu.setPreferredSize(new Dimension(res.width/3, 100));
+		pnlUnderMenu.setPreferredSize(new Dimension(640, 100));
 		pnl_South.add(pnlUnderMenu);
 		
 		btnProfile = new JButton();

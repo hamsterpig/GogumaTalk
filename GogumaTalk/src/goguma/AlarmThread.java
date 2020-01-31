@@ -6,17 +6,21 @@ import java.awt.Toolkit;
 
 public class AlarmThread extends Thread{
 	Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
+	boolean stop = false;
 	
 	AlarmThread(){
 		int alarmSpaceSize = 100;
 		int alarmSize = 610;
 		while(alarmSize > 100){
-			Main.alarmSpace.setPreferredSize(new Dimension(res.width/3 - alarmSpaceSize, 50));
-			Main.alarm.setPreferredSize(new Dimension(res.width/3 - alarmSize, 50));
+			Main.alarmSpace.setPreferredSize(new Dimension(640 - alarmSpaceSize, 50));
+			Main.alarm.setPreferredSize(new Dimension(640 - alarmSize, 50));
 			Main.pnlMenubar.revalidate();
 			Main.pnlMenubar.repaint();
 			try {
-				Thread.sleep(10);
+				Thread.sleep(7);
+				if(stop == true){
+					return;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -27,7 +31,10 @@ public class AlarmThread extends Thread{
 
 		}
 		try {
-			Thread.sleep(1000);
+			Thread.sleep(350);
+			if(stop == true){
+				return;
+			}
 		} catch (InterruptedException e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
@@ -35,7 +42,10 @@ public class AlarmThread extends Thread{
 		
 		for(int i=150; i>1; i--){
 			try {
-				Thread.sleep(50);
+				Thread.sleep(35);
+				if(stop == true){
+					return;
+				}
 			} catch (InterruptedException e) {
 				// TODO Auto-generated catch block
 				e.printStackTrace();
@@ -43,8 +53,6 @@ public class AlarmThread extends Thread{
 			Main.alarm.setForeground(new Color(i,i,i));
 		}
 		
-			
-
 	}
 	
 	

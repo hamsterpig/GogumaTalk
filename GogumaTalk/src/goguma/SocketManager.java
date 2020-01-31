@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
+import java.net.ConnectException;
 import java.net.Socket;
 import java.net.UnknownHostException;
 
@@ -12,7 +13,8 @@ public class SocketManager {
 	
 	private static SocketManager instance;
 	//static final String IP = "192.168.100.220"; // g
-	static final String IP = "192.168.100.211"; // j
+	//static final String IP = "192.168.100.211"; // j
+	static final String IP = "192.168.100.45"; // j
 	//static final String IP = "192.168.100.170"; // my
 	
 	private Socket sock;
@@ -21,7 +23,7 @@ public class SocketManager {
 	
 	private SocketManager(){
 		try {
-			sock = new Socket(IP, 9876);
+			sock = new Socket(IP, 10001);
 			toServ = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 			fromServ = new BufferedReader(new InputStreamReader(sock.getInputStream()));
 		} catch (UnknownHostException e) {
@@ -34,8 +36,11 @@ public class SocketManager {
 	}
 	
 	public static SocketManager getInstance(){
-		if(instance == null)
+		if(instance == null){
 			instance = new SocketManager();
+		}
+		
+			
 		return instance;
 	}
 }

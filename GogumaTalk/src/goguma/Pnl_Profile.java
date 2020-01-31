@@ -8,7 +8,9 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.util.ArrayList;
 
+import javax.swing.BoxLayout;
 import javax.swing.JButton;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
@@ -16,16 +18,23 @@ import javax.swing.JScrollPane;
 
 public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 
+	static JLabel lbMsg = new JLabel();
 	JScrollPane scList;
-	int fCNT = 0;
+	static int pCNT = 0;
+	static JPanel pTest;
+	static JPanel pnlList;
+	
+	
+	static ArrayList<Pnl_ProfilePerson> profilePerson = new ArrayList<Pnl_ProfilePerson>();
 
 	Pnl_Profile() {
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
+		FontManager fontManager = FontManager.getInstance();
 		// Frame Default Size
-		this.setPreferredSize(new Dimension(res.width / 3, res.height));
+		this.setPreferredSize(new Dimension(640, 1080));
 		this.setBackground(Color.yellow);
 
-		pnl_North.setPreferredSize(new Dimension(res.width / 3, 175));
+		pnl_North.setPreferredSize(new Dimension(640, 175));
 		pnl_North.setLayout(new FlowLayout());
 		pnl_North.setBackground(new Color(100, 100, 255));
 
@@ -34,7 +43,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		lbSpace.setBackground(Color.yellow);
 
 		pnlMenu = new JPanel(new FlowLayout(FlowLayout.LEADING));
-		pnlMenu.setPreferredSize(new Dimension(res.width / 3, 80));
+		pnlMenu.setPreferredSize(new Dimension(640, 80));
 		pnlMenu.setBackground(Color.green);
 		pnlMenu.setOpaque(true);
 
@@ -68,7 +77,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		lbProfileImg.setPreferredSize(new Dimension(70, 70));
 		lbProfile.setFont(fontManager.CalibriBOLD50);
 		pnlProfileLine = new JPanel();
-		pnlProfileLine.setPreferredSize(new Dimension(res.width / 3, 80));
+		pnlProfileLine.setPreferredSize(new Dimension(640, 80));
 		pnlProfileLine.setBackground(Color.blue);
 		pnlProfileLine.setOpaque(true);
 
@@ -81,29 +90,58 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnl_Center.setOpaque(true);
 		pnlList = new JPanel();
 		pnlList.setBackground(Color.white);
+		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
 		scList = new JScrollPane();
 		scList.setViewportView(pnlList);
 		scList.getViewport().setBackground(Color.white);
-		
-		if(fCNT == 0){
-			JLabel lbTemp = new JLabel("Please Add Friends");
-			lbTemp.setFont(fontManager.CalibriPLAIN35);
-			pnlList.add(lbTemp);
-		}
-
-		// scList.setPreferredSize(new Dimension(res.width/3, 500));
 
 		pnl_Center.add(scList);
 		setTheme(Main.colorTheme);
 		
-		
 		//add Panel
 		btnLogout.addActionListener(this);
-
-
+		
+		
+		updatePerson();
+		
 	} // new 
 	
+	static public void addPerson(String name, String connect){
+		profilePerson.add(new Pnl_ProfilePerson(name, connect));
+		updatePerson();
+	}
 	
+	
+
+	static public void updatePerson() {
+		// TODO Auto-generated method stub
+		pTest = new JPanel();
+		pnlList.removeAll();
+		pnlList.revalidate();
+		pnlList.repaint();
+		
+		if(profilePerson.size() == 0 || pCNT == 0){
+			pTest.setBackground(Color.white);
+			pTest.setPreferredSize(new Dimension(620,70));
+			lbMsg = new JLabel("Please Add Friend");
+			lbMsg.setFont(fontManager.CalibriBOLD35);
+			lbMsg.setBackground(Color.white);
+			lbMsg.setOpaque(true);
+			pTest.add(lbMsg);
+			pnlList.add(pTest);
+		}
+		
+		for(int i=0; i<profilePerson.size(); i++){
+			pnlList.add(profilePerson.get(i));
+			pCNT++;
+		}
+		pnlList.revalidate();
+		pnlList.repaint();
+	}
+
+
+
+
 
 	private void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);

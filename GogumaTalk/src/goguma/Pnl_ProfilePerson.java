@@ -7,22 +7,24 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.awt.event.MouseMotionListener;
 
-import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Pnl_ChatRoom extends JPanel implements MouseListener{
+public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 	JLabel lbIMG, lbLastMsg, lbName;
 	FontManager fontManager = FontManager.getInstance();
 	
-	static int roomNum = 0;
+	static int personNum = 0;
 	int myNum;
+	Pnl_ProfilePerson(){}
 	
-	Pnl_ChatRoom(){
+	Pnl_ProfilePerson(String name, String connect) {
+
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		this.setPreferredSize(new Dimension(640, 70));
+		this.setPreferredSize(new Dimension(610, 70));
 		this.setBackground(new Color(200,200,200));
 		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		
@@ -37,7 +39,7 @@ public class Pnl_ChatRoom extends JPanel implements MouseListener{
 		lbTLine.setBackground(new Color(200,200,200));
 		
 		lbName = new JLabel();
-		lbName.setText("Name");
+		lbName.setText(name);
 		lbName.setFont(fontManager.CalibriBOLD30);
 		
 		lbLastMsg = new JLabel();
@@ -51,37 +53,32 @@ public class Pnl_ChatRoom extends JPanel implements MouseListener{
 		this.add(lbTLine);
 		this.addMouseListener(this);
 		
-		myNum = roomNum;
-		roomNum++;
+		myNum = personNum;
+		personNum++;
 		
 		
-		
-	}
-
+		}
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		System.out.println(myNum);
+		
 	}
-
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
-
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub

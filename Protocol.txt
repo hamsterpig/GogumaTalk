@@ -1,0 +1,57 @@
+[서버 -> 클라]
+
+/alarm Hello
+
+/c /from Tom Hi
+
+/kick Msg
+
+/ban Msg
+
+/reg/success(중복 아이디가 없고 아이디 생성을 성공하면 보낸다)
+
+/reg/fail(중복 아이디 또는 부적절한 아이디로 아이디 생성을 보낸다)
+
+/possible  (로그인 성공시 보낸다.)
+/reduplication(로그인시 아이디 중복 발생) 
+/impossible  (로그인 실패시 보낸다.)
+
+/reg/ok (회원가입 성공시 보낸다)
+/reg/fail (회원가입 실패시 보낸다)
+
+/userInfo name false (친구 목록을 보낸다)
+
+/o/from tom hi (오픈채팅 tom에게서 hi가 왔다)
+
+/o/quit tom (오픈채팅 tom이 나갔다)
+
+/roomInfo name pw 3 5 (클라에게 방 정보를 보낸다) 3은 현재 인원 5는 최대 인원
+
+[클라 -> 서버]
+
+/log ID PW
+
+/reg ID PW
+
+/req/user 친구목록을 요청한다
+
+/req/room (방 정보를 요청한다)
+
+/roomMake name pw 5 (방 생성을 요청한다)
+
+[클라이언트 처리 내용]
+
+/alarm Hello 를 받으면 팝업을 띄운다
+
+/c /from Tom Hi 를 받으면 1:1채팅에서 Tom으로 부터 Hi가 온 것이다
+
+/kick Msg 를 받으면 팝업에 Msg 내용을 보여준다
+
+/ban Msg 를 받으면 팝업에 Msg 내용을 보여준다
+
+/reg/success 를 받으면 아이디 생성했다고 팝업을 보여준다
+
+/reg/fail 를 받으면 아이디 생성 실패했다고 팝업을 보여준다
+
+
+   

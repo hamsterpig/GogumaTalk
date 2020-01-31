@@ -17,6 +17,7 @@ public class Pnl_Chat extends Pnl_SideBar{
 	
 	JScrollPane scList;
 	ArrayList<Pnl_ChatRoom> chatRoom;
+	JPanel pnlList;
 	
 	int rCNT = 0;
 
@@ -45,17 +46,7 @@ public class Pnl_Chat extends Pnl_SideBar{
 		}
 		updateRoom();
 		
-		if(chatRoom.size() == 0 || rCNT == 0){
-			JPanel pTest = new JPanel();
-			pTest.setBackground(Color.white);
-			pTest.setPreferredSize(new Dimension(res.width,70));
-			lbMsg = new JLabel("Please Add Chat");
-			lbMsg.setFont(fontManager.CalibriPLAIN35);
-			lbMsg.setBackground(Color.red);
-			lbMsg.setOpaque(true);
-			pTest.add(lbMsg);
-			pnlList.add(pTest);
-		}
+
 		scList.setViewportView(pnlList); // scroll Panel
 		pnl_c_c.add(scList);
 		
@@ -66,6 +57,18 @@ public class Pnl_Chat extends Pnl_SideBar{
 		for(int i=0; i<chatRoom.size(); i++){
 			pnlList.add(chatRoom.get(i));
 			rCNT++;
+		}
+		
+		if(chatRoom.size() == 0 || rCNT == 0){
+			JPanel pTest = new JPanel();
+			pTest.setBackground(Color.white);
+			pTest.setPreferredSize(new Dimension(620,70));
+			lbMsg = new JLabel("Please Add Chat");
+			lbMsg.setFont(fontManager.CalibriPLAIN35);
+			lbMsg.setBackground(Color.red);
+			lbMsg.setOpaque(true);
+			pTest.add(lbMsg);
+			pnlList.add(pTest);
 		}
 	}
 	

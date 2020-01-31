@@ -13,6 +13,7 @@ public class FontManager{
 	CalibriBOLD30, CalibriBOLD35, CalibriBOLD50;
 	Font CalibriUnder18;
 	Font GodicBOLD15, GodicBOLD20, GodicBOLD25, GodicBOLD30, GodicBOLD35, GodicBOLD40;
+	Font GodicITALIC15, GodicITALIC20, GodicITALIC25, GodicITALIC30;
 	
 	private FontManager(){
 		CalibriPLAIN15 = new Font("Calibri", Font.PLAIN, 15);
@@ -37,6 +38,11 @@ public class FontManager{
 		GodicBOLD30 = new Font("¸¼Àº °íµñ", Font.PLAIN, 30);
 		GodicBOLD35 = new Font("¸¼Àº °íµñ", Font.PLAIN, 35);
 		GodicBOLD40 = new Font("¸¼Àº °íµñ", Font.PLAIN, 40);
+		
+		GodicITALIC15 = new Font("¸¼Àº °íµñ", Font.ITALIC, 15);
+		GodicITALIC20 = new Font("¸¼Àº °íµñ", Font.ITALIC, 20);
+		GodicITALIC25 = new Font("¸¼Àº °íµñ", Font.ITALIC, 25);
+		GodicITALIC30 = new Font("¸¼Àº °íµñ", Font.ITALIC, 30);
 		
 	}
 	
