@@ -22,7 +22,7 @@ public class Pnl_ChatRoom extends JPanel implements MouseListener{
 	Pnl_ChatRoom(){
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		this.setPreferredSize(new Dimension(640, 70));
+		this.setPreferredSize(new Dimension(640, 83));
 		this.setBackground(new Color(200,200,200));
 		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		
@@ -61,7 +61,8 @@ public class Pnl_ChatRoom extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(myNum);
+		Pnl_Chat.chatName = lbName.getText();
+		Main.changePnl(Main.pnl_Chat, Main.pnl_ChatIn);
 	}
 
 	@Override

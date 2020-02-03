@@ -163,7 +163,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 		checkID.addKeyListener(this);
 		checkPASS.addKeyListener(this);
 		
-		btnLogin.setEnabled(false);
+		
 	}
 	
 	private void getSave_ID_PASS() {
@@ -181,6 +181,12 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 			tempID = tempID.replace(" ", "");
 			tfPASS.setText(tempPASS);
 			checkPASS.setSelected(true);
+		}
+		
+		if(!tfID.getText().equals("") && !tfPASS.getText().equals("")){
+			btnLogin.setEnabled(true);
+		} else {
+			btnLogin.setEnabled(false);
 		}
 		
 		if(tfID.getText().equals("")){
@@ -224,8 +230,6 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 		repaint();
 
 		
-		
-		
 	}
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -235,6 +239,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 			} else if(tfPASS.getText().equals("") || tfPASS.getText()==null){
 				JOptionPane.showMessageDialog(null, "Please enter your Password.", "Warning", JOptionPane.WARNING_MESSAGE);
 			} else {
+				Main.soket = SocketManager.getInstance();
 				soketLoginTry();
 			}
 			
@@ -286,9 +291,10 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 	@Override
 	public void keyPressed(KeyEvent e) {
 		// TODO Auto-generated method stub
-		Main.soket = SocketManager.getInstance();
+		
 		
 		if(e.getKeyCode()==10){
+			Main.soket = SocketManager.getInstance();
 			soketLoginTry();
 		}
 		
@@ -296,7 +302,7 @@ public class Pnl_Login extends Pnl_Default implements ActionListener, KeyListene
 				|| tfID != null && tfPASS.getText().equals("")){
 			lbMSG.setText("Need -> Input Password");
 			lbMSG.setForeground(Color.blue);
-			System.out.println("dd");
+			btnLogin.setEnabled(false);
 		} else if(!tfPASS.getText().equals("") || tfPASS != null){
 			lbMSG.setText("Need -> Login Click or Enter Key");
 			lbMSG.setForeground(Color.blue);

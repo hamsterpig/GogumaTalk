@@ -15,16 +15,20 @@ import javax.swing.JPanel;
 public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 	JLabel lbIMG, lbLastMsg, lbName;
 	FontManager fontManager = FontManager.getInstance();
+	JLabel lbOnOff;
+	Dialog_DelFriend dialog_DelFriend;
 	
 	static int personNum = 0;
 	int myNum;
 	Pnl_ProfilePerson(){}
 	
 	Pnl_ProfilePerson(String name, String connect) {
+		
+		dialog_DelFriend = new Dialog_DelFriend();
 
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		this.setPreferredSize(new Dimension(610, 70));
+		this.setPreferredSize(new Dimension(610, 83));
 		this.setBackground(new Color(200,200,200));
 		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		
@@ -42,12 +46,32 @@ public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 		lbName.setText(name);
 		lbName.setFont(fontManager.CalibriBOLD30);
 		
+		JPanel pnl_LastLine = new JPanel();
+		pnl_LastLine.setOpaque(false);
+		
+		lbOnOff = new JLabel();
+		lbOnOff.setText(" ¡Ü ");
+		lbOnOff.setFont(fontManager.CalibriPLAIN25);
+		
 		lbLastMsg = new JLabel();
-		lbLastMsg.setText("No conversation content.");
 		lbLastMsg.setFont(fontManager.CalibriPLAIN25);
 		
+		
+		if(connect.equals("true")){
+			lbOnOff.setForeground(Color.green);
+			lbLastMsg.setForeground(Color.blue);
+			lbLastMsg.setText("OnLine");
+		} else {
+			lbOnOff.setForeground(Color.gray);
+			lbLastMsg.setForeground(Color.gray);
+			lbLastMsg.setText("OffLine");
+		}
+		
+		
+		pnl_LastLine.add(lbOnOff);
+		pnl_LastLine.add(lbLastMsg);
 		lbTLine.add(lbName);
-		lbTLine.add(lbLastMsg);
+		lbTLine.add(pnl_LastLine);
 		
 		this.add(lbIMG);
 		this.add(lbTLine);
@@ -62,6 +86,15 @@ public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		System.out.println(myNum);
+		if(dialog_DelFriend==null){
+			dialog_DelFriend = new Dialog_DelFriend();
+			dialog_DelFriend.setVisible(true);
+		} else{
+			Dialog_DelFriend.lbMSG.setText("Please Enter ID");
+			Dialog_DelFriend.lbMSG.setForeground(Color.gray);
+			dialog_DelFriend.setVisible(true);
+		}
+	
 		
 	}
 	@Override

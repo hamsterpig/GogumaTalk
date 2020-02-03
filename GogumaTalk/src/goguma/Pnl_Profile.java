@@ -23,6 +23,9 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 	static int pCNT = 0;
 	static JPanel pTest;
 	static JPanel pnlList;
+	Dialog_Friend dialog_AddFriend;
+	
+
 	
 	
 	static ArrayList<Pnl_ProfilePerson> profilePerson = new ArrayList<Pnl_ProfilePerson>();
@@ -90,19 +93,24 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnl_Center.setOpaque(true);
 		pnlList = new JPanel();
 		pnlList.setBackground(Color.white);
-		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
+		pnlList.setLayout(new ModifiedFlowLayout());
 		scList = new JScrollPane();
 		scList.setViewportView(pnlList);
-		scList.getViewport().setBackground(Color.white);
+		scList.getViewport().setBackground(Color.white); // Scroll Color
 
 		pnl_Center.add(scList);
 		setTheme(Main.colorTheme);
 		
 		//add Panel
 		btnLogout.addActionListener(this);
+		btnaddPerson.addActionListener(this);
 		
+		/*addPerson("name", "true");
+		addPerson("name2", "false");*/
 		
 		updatePerson();
+		addPerson("name", "true");
+		addPerson("name", "true");
 		
 	} // new 
 	
@@ -120,6 +128,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnlList.revalidate();
 		pnlList.repaint();
 		
+		
 		if(profilePerson.size() == 0 || pCNT == 0){
 			pTest.setBackground(Color.white);
 			pTest.setPreferredSize(new Dimension(620,70));
@@ -130,6 +139,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 			pTest.add(lbMsg);
 			pnlList.add(pTest);
 		}
+		
 		
 		for(int i=0; i<profilePerson.size(); i++){
 			pnlList.add(profilePerson.get(i));
@@ -145,19 +155,29 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 
 	private void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);
-
 		lbSpace.setBackground(c);
 		pnlMenu.setBackground(c);
 		pnlProfileLine.setBackground(c);
 		btnProfile.setBackground(c);
-
 	}
 
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-
+		if(e.getSource()==btnaddPerson){
+			System.out.println("dd");
+		}
+		if(e.getSource()==btnaddPerson){
+			if(dialog_AddFriend==null){
+				dialog_AddFriend = new Dialog_Friend();
+				dialog_AddFriend.setVisible(true);
+			} else{
+				Dialog_Friend.lbMSG.setText("Please Enter ID");
+				Dialog_Friend.lbMSG.setForeground(Color.gray);
+				dialog_AddFriend.setVisible(true);
+			}
+		}
 	
 	}
 }

@@ -1,0 +1,220 @@
+package goguma;
+
+import java.awt.BorderLayout;
+import java.awt.Color;
+import java.awt.Dimension;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
+import java.awt.event.KeyEvent;
+import java.awt.event.KeyListener;
+
+import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
+import javax.swing.JButton;
+import javax.swing.JLabel;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JTextField;
+
+public class Pnl_ChatIn extends JPanel implements ActionListener,KeyListener{
+	FontManager fontManager = FontManager.getInstance();
+	
+	JPanel pnl_ChatIn_c, pnl_ChatIn_n, pnl_ChatIn_s,pnlMyChat1,pnlMyChat2;
+	JPanel pnlYourChat,pnlYourChat_L,pnlYourChat_R,pnlYourName,pnlYourChat1,pnlYourChat2;
+	JButton btnExit,btnDelete,btnFunction;
+	JTextField tfChat;
+	JLabel lblMyChat,lblYourChat,lblYourName,lblYourImage;
+	String tmp="";
+	static JLabel lbFriendName, lbOnOff;
+	Color bg;
+	JScrollPane scr_center;
+	Pnl_ChatIn(){
+		bg =new Color(102,153,255);
+		this.setLayout(new BorderLayout());
+		this.setBackground(Color.black);
+		pnl_ChatIn_c = new JPanel();
+		pnl_ChatIn_c.setBackground(new Color(102,153,255));
+		//pnl_ChatIn_c.setPreferredSize(new Dimension(720, 880));
+		pnl_ChatIn_c.setLayout(new ModifiedFlowLayout());
+		
+		scr_center = new JScrollPane(pnl_ChatIn_c,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		scr_center.setPreferredSize(new Dimension(720, 880));
+
+		
+		pnl_ChatIn_n = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		pnl_ChatIn_n.setBackground(new Color(125,165,255));
+		pnl_ChatIn_n.setPreferredSize(new Dimension(720, 60));
+		
+		
+
+		
+		lbFriendName = new JLabel();
+		lbFriendName = new JLabel();
+		lbFriendName.setText(Pnl_Chat.chatName);
+		lbFriendName.setFont(fontManager.GodicBOLD25);
+		lbFriendName.setPreferredSize(new Dimension(500,60));
+		
+		lbOnOff = new JLabel();
+		lbOnOff.setText(" ● ");
+		lbOnOff.setFont(fontManager.GodicBOLD25);
+		
+		
+		btnExit = new JButton("Exit");
+		btnExit.setPreferredSize(new Dimension(60,40));
+		btnExit.setFont(fontManager.CalibriBOLD15);
+		btnExit.setBackground(new Color(255,180,180));
+		btnExit.addActionListener(this);
+		
+		btnFunction = new JButton("+");
+		btnFunction.setPreferredSize(new Dimension(40,40));
+		btnFunction.addActionListener(this);
+		
+		btnDelete = new JButton("X");
+		btnDelete.setPreferredSize(new Dimension(40,40));
+		btnDelete.addActionListener(this);
+		
+		tfChat = new JTextField(47);
+		tfChat.setPreferredSize(new Dimension(40,40));
+		tfChat.addKeyListener(this);
+		
+		pnl_ChatIn_s = new JPanel();
+		pnl_ChatIn_s.setBackground(bg);
+		pnl_ChatIn_s.setPreferredSize(new Dimension(720, 60));
+		pnl_ChatIn_s.add(btnFunction);
+		pnl_ChatIn_s.add(tfChat);
+		pnl_ChatIn_s.add(btnDelete);
+		
+		pnl_ChatIn_n.add(lbOnOff);
+		pnl_ChatIn_n.add(lbFriendName);
+		pnl_ChatIn_n.add(btnExit);
+		
+		
+		
+		
+		this.add(pnl_ChatIn_n, BorderLayout.NORTH);
+		this.add(scr_center, BorderLayout.CENTER);
+		this.add(pnl_ChatIn_s,"South");
+		updateState();
+	}
+	void myChat(String id,String msg){
+		
+		lblMyChat = new JLabel(msg);		
+		lblMyChat.setHorizontalAlignment(JLabel.RIGHT);
+		pnlMyChat1 = new JPanel();
+		pnlMyChat1.setBackground(Color.ORANGE);
+		pnlMyChat1.add(lblMyChat);
+		
+		pnlMyChat2 = new JPanel();
+		pnlMyChat2.setLayout(new FlowLayout(FlowLayout.TRAILING));
+		pnlMyChat2.setPreferredSize(new Dimension(555,47));
+		pnlMyChat2.setBackground(bg);
+		pnlMyChat2.add(pnlMyChat1);
+		
+		pnl_ChatIn_c.add(pnlMyChat2);
+		
+		tmp=id;
+	}
+	void yourChat(String id,String image,String msg){
+
+		
+		//왼쪽
+		lblYourImage = new JLabel(new ImageIcon("img/img5.png"));
+		lblYourImage.setPreferredSize(new Dimension(40,40));
+		lblYourImage.setBounds(3,3,35,35);
+		pnlYourChat_L = new JPanel();
+		pnlYourChat_L.setPreferredSize(new Dimension(40,40));
+		pnlYourChat_L.setBackground(bg);
+		pnlYourChat_L.setLayout(new BorderLayout());
+		
+		///오른쪽
+		lblYourName = new JLabel(id);
+		lblYourName.setHorizontalAlignment(JLabel.LEFT);
+		pnlYourName = new JPanel(new FlowLayout(FlowLayout.LEADING));
+		pnlYourName.setPreferredSize(new Dimension(500,30));
+		pnlYourName.setBackground(bg);
+		pnlYourName.add(lblYourName);
+		//채팅(오른쪽)
+		lblYourChat = new JLabel(msg);
+		lblYourChat.setHorizontalAlignment(JLabel.LEFT);
+		pnlYourChat1 = new JPanel();
+		pnlYourChat1.setBackground(Color.WHITE);
+		pnlYourChat1.add(lblYourChat);
+		pnlYourChat2 = new JPanel();
+		pnlYourChat2.setLayout(new FlowLayout(FlowLayout.LEADING));
+		pnlYourChat2.setBackground(bg);
+		pnlYourChat2.setPreferredSize(new Dimension(500,40));
+		pnlYourChat2.add(pnlYourChat1);
+		pnlYourChat_R = new JPanel();
+		pnlYourChat_R.setLayout(new BoxLayout(pnlYourChat_R,BoxLayout.Y_AXIS));		
+		
+		pnlYourChat = new JPanel();
+		pnlYourChat.setBackground(bg);
+		
+		if(tmp.equals(id)){
+		lblYourImage.setText("");
+		pnlYourChat_R.add(pnlYourChat2);
+		pnlYourChat.add(pnlYourChat_L);
+		//pnlYourChat.add(pnlYourChat_R);
+		}else{
+		pnlYourChat_R.add(pnlYourName);
+		pnlYourChat_R.add(pnlYourChat2);
+		pnlYourChat_L.add(lblYourImage);
+		pnlYourChat.add(pnlYourChat_L);
+
+		}
+				
+	
+		pnlYourChat.add(pnlYourChat_R);
+		pnl_ChatIn_c.add(pnlYourChat);	
+		
+		tmp=id;
+
+				
+	}
+
+	private void updateState() {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void actionPerformed(ActionEvent e) {
+		// TODO Auto-generated method stub
+		if(btnExit==e.getSource()){
+			System.out.println("dd");
+			Main.changePnl(this, Main.pnl_Chat);
+						
+		}else if(btnFunction==e.getSource()){
+			System.out.println("function");
+			
+			yourChat(lbFriendName.getText(),"image",tfChat.getText());
+			scr_center.getVerticalScrollBar().setValue(scr_center.getVerticalScrollBar().getMaximum());
+			scr_center.revalidate();
+			scr_center.repaint();
+		}else if(btnDelete == e.getSource()){
+			tfChat.setText("");
+		}
+		
+	}
+	@Override
+	public void keyPressed(KeyEvent e) {
+		System.out.println(e.getKeyCode());
+		if(e.getKeyCode()==10){
+			myChat("myid",tfChat.getText());
+			scr_center.getVerticalScrollBar().setValue(scr_center.getVerticalScrollBar().getMaximum()+1);
+			pnl_ChatIn_c.revalidate();
+			pnl_ChatIn_c.repaint();
+		}
+	}
+	@Override
+	public void keyReleased(KeyEvent arg0) {
+		// TODO 자동 생성된 메소드 스텁
+		
+	}
+	@Override
+	public void keyTyped(KeyEvent arg0) {
+		// TODO 자동 생성된 메소드 스텁
+		
+	}
+}

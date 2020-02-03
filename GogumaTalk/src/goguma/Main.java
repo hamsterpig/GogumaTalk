@@ -19,22 +19,19 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 public class Main extends JFrame implements ActionListener {
-
+	static Pnl_ChatIn pnl_ChatIn;
 	static Pnl_Profile pnl_Profile;
 	static Pnl_Login pnl_Login;
 	static Pnl_Chat pnl_Chat;
 	Pnl_SideBar pnl_SideBar;
-	Pnl_MultiChat pnl_MultiChat;
+	static Pnl_MultiChat pnl_MultiChat;
 	Pnl_Setting pnl_Setting;
 
 	static JPanel pnlMenubar;
 	static JLabel alarm, alarmSpace;
 	static JPanel pnl;
-	
 	static Color colorTheme;
-
 	static RecvThread recv;
-	
 	static boolean isLogin = false;
 	
 	static SocketManager soket;
@@ -43,7 +40,9 @@ public class Main extends JFrame implements ActionListener {
 		FontManager fontManager = FontManager.getInstance();
 		ColorManager colorManager = ColorManager.getInstance();
 		
-		colorTheme = colorManager.kakao;
+		pnl_ChatIn = new Pnl_ChatIn();
+		
+		colorTheme = colorManager.kakao; // setting Theme
 
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize(); // Frame
 		// Default
@@ -102,7 +101,7 @@ public class Main extends JFrame implements ActionListener {
 
 		pnl.add(pnlMenubar, BorderLayout.NORTH);
 		pnl.add(pnl_Login, BorderLayout.CENTER);
-		this.setSize(640, 1080 - 100);
+		this.setSize(640, 980);
 		this.add(pnl);
 		
 		this.setLocationRelativeTo(null);
@@ -122,6 +121,7 @@ public class Main extends JFrame implements ActionListener {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
+			
 			System.out.println("ERROR");
 		}
 		new Main();
@@ -135,6 +135,14 @@ public class Main extends JFrame implements ActionListener {
 			getUserList();
 			System.out.println("---");
 		}
+		
+		if(p2==pnl_ChatIn){
+			Pnl_ChatIn.lbFriendName.setText(Pnl_Chat.chatName);
+			System.out.println(Pnl_Chat.chatName);
+			Pnl_ChatIn.lbFriendName.revalidate();
+			Pnl_ChatIn.lbFriendName.repaint();
+		}
+		
 		Main.pnl.remove(p1);
 		Main.pnl.add(p2, BorderLayout.CENTER);
 		Main.pnl.revalidate();

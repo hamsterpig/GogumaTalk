@@ -20,6 +20,9 @@ public class Pnl_Chat extends Pnl_SideBar{
 	JPanel pnlList;
 	
 	int rCNT = 0;
+	
+	static String chatName = "";
+	static int chatNum = 0;
 
 	Pnl_Chat(){
 		
@@ -34,15 +37,16 @@ public class Pnl_Chat extends Pnl_SideBar{
 		
 		pnlList = new JPanel();
 		pnlList.setBackground(Color.white);
-		pnlList.setLayout(new BoxLayout(pnlList, BoxLayout.Y_AXIS));
+		pnlList.setLayout(new ModifiedFlowLayout());
 		scList = new JScrollPane();
 		scList.getViewport().setBackground(Color.white);
 		scList.setPreferredSize(new Dimension(res.width/3, 710));
 		
 		chatRoom = new ArrayList<Pnl_ChatRoom>();
 		
-		for(int i=0; i<10; i++){ // test Room
+		for(int i=0; i<3; i++){ // test Room
 			chatRoom.add(new Pnl_ChatRoom());
+			chatRoom.get(i).lbName.setText("Name"+i);
 		}
 		updateRoom();
 		

@@ -14,8 +14,8 @@ public class SocketManager {
 	private static SocketManager instance;
 	//static final String IP = "192.168.100.220"; // g
 	//static final String IP = "192.168.100.211"; // j
-	static final String IP = "192.168.100.45"; // j
-	//static final String IP = "192.168.100.170"; // my
+	//static final String IP = "192.168.100.45"; // j
+	static final String IP = "192.168.100.170"; // my
 	
 	private Socket sock;
 	public PrintWriter toServ;
