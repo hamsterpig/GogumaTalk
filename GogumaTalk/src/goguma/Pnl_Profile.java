@@ -24,6 +24,9 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 	static JPanel pTest;
 	static JPanel pnlList;
 	Dialog_Friend dialog_AddFriend;
+	JLabel isOnoff;
+	JButton btnEditProfile;
+
 	
 
 	
@@ -41,9 +44,11 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnl_North.setLayout(new FlowLayout());
 		pnl_North.setBackground(new Color(100, 100, 255));
 
-		lbSpace = new JLabel();
+		//lbSpace = new JLabel(" Friend State : ");
 		lbSpace.setPreferredSize(new Dimension(430, 80));
-		lbSpace.setBackground(Color.yellow);
+		lbSpace.setFont(fontManager.GodicBOLD25);
+		lbSpace.setOpaque(true);
+		lbSpace.setForeground(new Color(50,50,255));
 
 		pnlMenu = new JPanel(new FlowLayout(FlowLayout.LEADING));
 		pnlMenu.setPreferredSize(new Dimension(640, 80));
@@ -72,7 +77,7 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		//pnlMenu.add(btnSetting);
 
 		pnl_North.add(pnlMenu);
-
+		
 		lbProfile = new JLabel("Name");
 		lbProfileImg = new JLabel("IMG");
 		lbProfileImg.setIcon(Function.lbImageSetSize("img/person.png", 75,
@@ -84,9 +89,22 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		pnlProfileLine.setBackground(Color.blue);
 		pnlProfileLine.setOpaque(true);
 
+		isOnoff = new JLabel(" ● ");
+		isOnoff.setForeground(Color.green);
+		isOnoff.setFont(fontManager.GodicBOLD25);
+		
+		btnEditProfile = new JButton("Edit");
+		btnEditProfile.setFont(fontManager.CalibriBOLD20);
+		btnEditProfile.setBackground(new Color(180,180,255));
+		btnEditProfile.setPreferredSize(new Dimension(90,40));
+		btnEditProfile.addActionListener(this);
+		
+		pnlProfileLine.setLayout(new FlowLayout(FlowLayout.LEADING));
 		pnlProfileLine.add(lbProfileImg);
 		pnlProfileLine.add(lbProfile);
-		pnlProfileLine.setLayout(new FlowLayout(FlowLayout.LEADING));
+		pnlProfileLine.add(isOnoff);
+		pnlProfileLine.add(btnEditProfile);
+		
 		pnl_North.add(pnlProfileLine);
 
 		pnl_Center.setBackground(Color.white);
@@ -147,17 +165,34 @@ public class Pnl_Profile extends Pnl_SideBar implements ActionListener {
 		}
 		pnlList.revalidate();
 		pnlList.repaint();
+		
+		updateFriendState();
 	}
 
-
-
-
+	private static void updateFriendState() {
+		// TODO Auto-generated method stub
+		if(Main.isLogin==true){ // 전체 친구 중 온/오프라인 수 표시
+			int tempOnLine = 0;
+			int tempOffLine = 0;
+			for(int i=0; i<Pnl_Profile.profilePerson.size(); i++){
+				if(Pnl_Profile.profilePerson.get(i).lbLastMsg.getText().equals("OnLine")){
+					tempOnLine++;
+				} else {
+					tempOffLine++;
+				}
+				
+			}
+			
+			lbSpace.setText(" Friend State : " + tempOnLine + " / " + Pnl_Profile.profilePerson.size());
+			
+		}
+	}
 
 	private void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);
 		lbSpace.setBackground(c);
 		pnlMenu.setBackground(c);
-		pnlProfileLine.setBackground(c);
+		pnlProfileLine.setBackground(new Color(255,255,230));
 		btnProfile.setBackground(c);
 	}
 

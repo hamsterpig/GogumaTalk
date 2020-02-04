@@ -14,7 +14,7 @@ public class Pnl_SideBar extends Pnl_Default{
 	JLabel lbProfile, lbProfileImg;
 	JButton btnLogout, btnsearch, btnaddPerson;
 	JButton btnProfile, btnMultiChat, btnChat, btnSetting; // underMenu btn
-	JLabel lbSpace;
+	static JLabel lbSpace = new JLabel();
 	
 	Main main;
 	Pnl_Profile pnl_Profile;

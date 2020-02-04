@@ -18,11 +18,14 @@ public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 	JLabel lbOnOff;
 	Dialog_ActionFriend dialog_DelFriend;
 	
+	String name = "";
+	
 	static int personNum = 0;
 	int myNum;
 	Pnl_ProfilePerson(){}
 	
 	Pnl_ProfilePerson(String name, String connect) {
+		this.name = name;
 		
 		dialog_DelFriend = new Dialog_ActionFriend();
 
@@ -85,13 +88,14 @@ public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(myNum);
 		if(dialog_DelFriend==null){
 			dialog_DelFriend = new Dialog_ActionFriend();
+			dialog_DelFriend.txID_Check.setText(name);
+			dialog_DelFriend.txID_Check.setFont(fontManager.GodicBOLD20);
 			dialog_DelFriend.setVisible(true);
 		} else{
-			Dialog_ActionFriend.lbMSG.setText("Please Enter ID");
-			Dialog_ActionFriend.lbMSG.setForeground(Color.gray);
+			dialog_DelFriend.txID_Check.setText(name);
+			dialog_DelFriend.txID_Check.setFont(fontManager.GodicBOLD20);
 			dialog_DelFriend.setVisible(true);
 		}
 	

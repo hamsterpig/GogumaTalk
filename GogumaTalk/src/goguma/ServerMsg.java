@@ -28,14 +28,32 @@ public class ServerMsg {
 			case "/maked": maked(split[1]); break;
 			case "/isOnline": isOnline(split[1], split[2]); break;
 			case "/targetOff": targetOff(split[1]); break; // Send impossible msg
-			case "/recvMSG": recvMSG(split[1], split[2]); break; // 1 - ID, 2 - msg
+			case "/recvMSG": recvMSG(split[1], s); break; // 1 - ID, 2 - msg
+			case "/okMakeRoom": okMakeRoom(s); break;
+			
 		}
 	} // process
 
-	private void recvMSG(String string, String string2) {
+	private void okMakeRoom(String s) {
 		// TODO Auto-generated method stub
-		Pnl_ChatRoom.privateChat(string2);
-		System.out.println(string+"로부터 메세지 옴 ㅡ>"+string2);
+		String[] tempSplit = s.split("/okMakeRoom ");
+		String roomInfo = tempSplit[1]; // roomInfo <ㅡ  ㈛제목㈛이미지번호㈛비밀번호㈛최대인원수㈛해시태그
+		
+		// 이곳에 roomInfo 를 이용해서 방생성 구현
+		//
+	}
+
+	private void recvMSG(String name, String msg) {
+		// TODO Auto-generated method stub
+		String[] tempSplit = msg.split("/recvMSG "+name);
+		System.out.println("--->"+msg);
+		
+		Pnl_ChatRoom.privateChat(tempSplit[1]);
+		System.out.println(name+"로부터 메세지 옴 ㅡ>"+tempSplit[1]);
+		
+		//
+		RecvMsgThread recvMsgThread = new RecvMsgThread(name);
+		recvMsgThread.start();
 	}
 
 	private void targetOff(String s) {
@@ -53,14 +71,20 @@ public class ServerMsg {
 
 	private void isOnline(String name, String isOnline) {
 		// TODO Auto-generated method stub
+
 		IsOnlineThread isOnlineThread = new IsOnlineThread(name, isOnline);
 		isOnlineThread.start();
+
+		
 	}
 
 	private void maked(String name) { // Success MakeRoom 
 		// TODO Auto-generated method stub
 		Pnl_Chat.chatRoom.add(new Pnl_ChatFreind(name));
 		Pnl_Chat.updateRoom();
+		
+		NewChatThread newChatThread = new NewChatThread(name);
+		newChatThread.start();
 	}
 
 	private void userUpdate() {

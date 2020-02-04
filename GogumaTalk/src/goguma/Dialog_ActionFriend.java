@@ -20,10 +20,12 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 	
 	JTextField txID_Check, txpass_Check, txNeed, txStateFeild;
 	JLabel lbTotal, lbDis, lbInput, lbStateFeild;
-	static JLabel lbMSG;
+	JLabel lbMSG;
 	JPanel pnl_c_Line01, pnl_c_Line02, pnl_c_Line03, pnl_c_Line04, pnl_c_Line05;
 	
 	JButton btnDel, btnChat, btnN;
+	
+	static String targetName;
 	
 	SocketManager socket = SocketManager.getInstance();
 	FontManager fontManeger = FontManager.getInstance();
@@ -48,9 +50,12 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 		lbTotal = new JLabel("ID"); 
 		lbDis = new JLabel("PW");
 		
-		txID_Check = new JTextField(12);
+		txID_Check = new JTextField();
+		txID_Check.setPreferredSize(new Dimension(170,40));
+		txID_Check.setHorizontalAlignment(txID_Check.CENTER);
 		txpass_Check = new JTextField(12);
 		txNeed = new JTextField(12);
+		txID_Check.setEditable(false);
 		
 		btnDel = new JButton("Del");
 		btnDel.setBackground(new Color(100,100,255));
@@ -71,7 +76,7 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 		lbMSG.setOpaque(true);
 		lbMSG.setHorizontalAlignment(lbMSG.CENTER);
 		//lbMSG.setFont(fontManeger.GodicITALIC15);
-		lbMSG.setText("Please Enter Your Friend");
+		lbMSG.setText("What do you want to do?");
 		lbMSG.setForeground(Color.gray);
 		
 		pnl_c_Line01 = new JPanel();
@@ -80,7 +85,7 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 		pnl_c_Line04 = new JPanel();
 		pnl_c_Line05 = new JPanel();
 		
-		pnl_c_Line01.add(lbTotal);
+		//pnl_c_Line01.add(lbTotal);
 		pnl_c_Line01.add(txID_Check);
 		pnl_c_Line02.add(lbMSG);
 		

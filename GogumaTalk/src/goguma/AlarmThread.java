@@ -6,52 +6,60 @@ import java.awt.Toolkit;
 
 public class AlarmThread extends Thread{
 	Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
-	boolean stop = false;
+	static boolean isStart = false;
+	static int Overlay = 0;
 	
 	AlarmThread(){
-		int alarmSpaceSize = 100;
-		int alarmSize = 610;
-		while(alarmSize > 100){
-			Main.alarmSpace.setPreferredSize(new Dimension(640 - alarmSpaceSize, 50));
-			Main.alarm.setPreferredSize(new Dimension(640 - alarmSize, 50));
-			Main.pnlMenubar.revalidate();
-			Main.pnlMenubar.repaint();
-			try {
-				Thread.sleep(7);
-				if(stop == true){
-					return;
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			
-			alarmSpaceSize = alarmSpaceSize+1;
-			alarmSize = alarmSize-1;
+		Overlay++;
+		//System.out.println("ThreadStart -> " + Overlay);
+		
+		while(isStart==false){
+			isStart = true;
+			if(Overlay > 0){
+				int alarmSpaceSize = 100;
+				int alarmSize = 610;
+				while(alarmSize > 100){
+					Main.alarmSpace.setPreferredSize(new Dimension(640 - alarmSpaceSize, 50));
+					Main.alarm.setPreferredSize(new Dimension(640 - alarmSize, 50));
+					Main.pnlMenubar.revalidate();
+					Main.pnlMenubar.repaint();
+					try {
+						Thread.sleep(5);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					
+					alarmSpaceSize = alarmSpaceSize+1;
+					alarmSize = alarmSize-1;
 
-		}
-		try {
-			Thread.sleep(350);
-			if(stop == true){
-				return;
+				}
+				try {
+					Thread.sleep(250);
+				} catch (InterruptedException e) {
+					// TODO Auto-generated catch block
+					e.printStackTrace();
+				}
+				
+				for(int i=150; i>1; i--){
+					try {
+						Thread.sleep(15);
+					} catch (InterruptedException e) {
+						// TODO Auto-generated catch block
+						e.printStackTrace();
+					}
+					Main.alarm.setForeground(new Color(i,i,i));
+				}
+				
+				Overlay = 0;
+				isStart = false;
+				//System.out.println("ThreadEnd -> " + Overlay + ", " + isStart);
+				break;
 			}
-		} catch (InterruptedException e) {
-			// TODO Auto-generated catch block
-			e.printStackTrace();
 		}
 		
-		for(int i=150; i>1; i--){
-			try {
-				Thread.sleep(35);
-				if(stop == true){
-					return;
-				}
-			} catch (InterruptedException e) {
-				// TODO Auto-generated catch block
-				e.printStackTrace();
-			}
-			Main.alarm.setForeground(new Color(i,i,i));
-		}
+		
+
 		
 	}
 	

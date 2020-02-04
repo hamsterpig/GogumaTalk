@@ -54,34 +54,36 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 		
 		btnY = new JButton("Add");
 		btnY.setBackground(new Color(100,100,255));
-		btnN = new JButton("Exit");
-		btnN.setBackground(new Color(255,100,100));
 		btnY.setPreferredSize(new Dimension(100,60));
-		btnN.setPreferredSize(new Dimension(100,60));
-		btnN.addActionListener(this);
 		btnY.addActionListener(this);
 		
+		btnN = new JButton("Exit");
+		btnN.setBackground(new Color(255,100,100));
+		btnN.setPreferredSize(new Dimension(190,30));
+		btnN.addActionListener(this);
+		
 		lbMSG = new JLabel();
-		lbMSG.setPreferredSize(new Dimension(200,25));
+		lbMSG.setPreferredSize(new Dimension(360,25));
 		lbMSG.setOpaque(true);
 		lbMSG.setHorizontalAlignment(lbMSG.CENTER);
 		//lbMSG.setFont(fontManeger.GodicITALIC15);
-		lbMSG.setText("Please Enter Your Friend");
-		lbMSG.setForeground(Color.gray);
+		lbMSG.setText("You Cannot Talk Because The Other Party Is Offline.");
+		lbMSG.setFont(fontManeger.CalibriBOLD15);
+		lbMSG.setForeground(Color.red);
 		
 		pnl_c_Line01 = new JPanel();
 		pnl_c_Line02 = new JPanel();
 		pnl_c_Line03 = new JPanel();
 		pnl_c_Line04 = new JPanel();
 		
-		pnl_c_Line01.add(lbTotal);
-		pnl_c_Line01.add(txID_Check);
+		//pnl_c_Line01.add(lbTotal);
+		//pnl_c_Line01.add(txID_Check);
 		//pnl_c_Line02.add(lbDis);
 		//pnl_c_Line02.add(txpass_Check);
 		
 		pnl_c_Line03.add(lbMSG);
 		
-		pnl_c_Line04.add(btnY);
+		//pnl_c_Line04.add(btnY);
 		pnl_c_Line04.add(btnN);
 		pnl_c.add(pnl_c_Line01);
 		pnl_c.add(pnl_c_Line02);
@@ -90,9 +92,9 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 
 		
 		pnl_c.setBackground(Color.white);
-		pnl_c.setPreferredSize(new Dimension(230,170));;
+		pnl_c.setPreferredSize(new Dimension(370,100));;
 		
-		setTitle("Add Friend");
+		setTitle("Cannot Talk");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(false);
@@ -125,17 +127,6 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==btnY){
-/*			if(txID_Check.getText().equals("") || txID_Check.getText() == null){
-				lbMSG.setText("Do not enter ID !");
-				lbMSG.setForeground(Color.red);
-			} else {
-				System.out.println("/req/friend " + txID_Check.getText());
-				socket.toServ.println("/req/friend " + txID_Check.getText());
-				socket.toServ.flush();
-				txID_Check.setText("");
-				txpass_Check.setText("");
-				this.setVisible(false);
-			}*/
 			
 		} else if(e.getSource()==btnN){
 			txID_Check.setText("");

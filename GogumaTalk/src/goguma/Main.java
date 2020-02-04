@@ -132,8 +132,9 @@ public class Main extends JFrame implements ActionListener {
 		Pnl_ProfilePerson.personNum = 0;
 		if(p2==pnl_Profile && isLogin==true){
 			getUserList(); // 리스트 재요청
-			System.out.println("---");
 		}
+		
+
 		
 		if(p2==pnl_ChatIn){
 			Pnl_ChatRoom.lbFriendName.setText(Pnl_Chat.chatName);

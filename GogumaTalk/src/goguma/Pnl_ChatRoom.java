@@ -218,11 +218,9 @@ public class Pnl_ChatRoom extends JPanel implements ActionListener,KeyListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(btnExit==e.getSource()){
-			System.out.println("dd");
 			Main.changePnl(this, Main.pnl_Chat);
 						
 		}else if(btnFunction==e.getSource()){ // 상대로부터 받음
-			System.out.println("dd");
 			String str = new String(tfChat.getText());
 			int num = str.length();
 			String str2 = new String("");
