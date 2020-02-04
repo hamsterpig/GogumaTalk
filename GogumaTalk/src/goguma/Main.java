@@ -19,7 +19,7 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 public class Main extends JFrame implements ActionListener {
-	static Pnl_ChatIn pnl_ChatIn;
+	static Pnl_ChatRoom pnl_ChatIn;
 	static Pnl_Profile pnl_Profile;
 	static Pnl_Login pnl_Login;
 	static Pnl_Chat pnl_Chat;
@@ -40,7 +40,7 @@ public class Main extends JFrame implements ActionListener {
 		FontManager fontManager = FontManager.getInstance();
 		ColorManager colorManager = ColorManager.getInstance();
 		
-		pnl_ChatIn = new Pnl_ChatIn();
+		pnl_ChatIn = new Pnl_ChatRoom();
 		
 		colorTheme = colorManager.kakao; // setting Theme
 
@@ -121,7 +121,6 @@ public class Main extends JFrame implements ActionListener {
 		try {
 			UIManager.setLookAndFeel("javax.swing.plaf.nimbus.NimbusLookAndFeel");
 		} catch (Exception e) {
-			
 			System.out.println("ERROR");
 		}
 		new Main();
@@ -132,15 +131,15 @@ public class Main extends JFrame implements ActionListener {
 		Pnl_Profile.profilePerson.clear();
 		Pnl_ProfilePerson.personNum = 0;
 		if(p2==pnl_Profile && isLogin==true){
-			getUserList();
+			getUserList(); // 리스트 재요청
 			System.out.println("---");
 		}
 		
 		if(p2==pnl_ChatIn){
-			Pnl_ChatIn.lbFriendName.setText(Pnl_Chat.chatName);
+			Pnl_ChatRoom.lbFriendName.setText(Pnl_Chat.chatName);
 			System.out.println(Pnl_Chat.chatName);
-			Pnl_ChatIn.lbFriendName.revalidate();
-			Pnl_ChatIn.lbFriendName.repaint();
+			Pnl_ChatRoom.lbFriendName.revalidate();
+			Pnl_ChatRoom.lbFriendName.repaint();
 		}
 		
 		Main.pnl.remove(p1);

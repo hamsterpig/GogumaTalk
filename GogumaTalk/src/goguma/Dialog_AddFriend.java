@@ -93,7 +93,7 @@ public class Dialog_AddFriend  extends JDialog implements ActionListener, KeyLis
 		pnl_c.setPreferredSize(new Dimension(230,170));;
 		
 		setTitle("Add Friend");
-		setDefaultCloseOperation(DO_NOTHING_ON_CLOSE);
+		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(false);
 		setResizable(false);

@@ -7,28 +7,22 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
-import java.awt.event.MouseMotionListener;
 
+import javax.swing.BoxLayout;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class Pnl_ProfilePerson extends JPanel implements MouseListener{
+public class Pnl_ChatFreind extends JPanel implements MouseListener{
 	JLabel lbIMG, lbLastMsg, lbName;
 	FontManager fontManager = FontManager.getInstance();
-	JLabel lbOnOff;
-	Dialog_ActionFriend dialog_DelFriend;
 	
-	static int personNum = 0;
+	static int roomNum = 0;
 	int myNum;
-	Pnl_ProfilePerson(){}
 	
-	Pnl_ProfilePerson(String name, String connect) {
-		
-		dialog_DelFriend = new Dialog_ActionFriend();
-
+	Pnl_ChatFreind(String name){
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
 		
-		this.setPreferredSize(new Dimension(610, 83));
+		this.setPreferredSize(new Dimension(640, 83));
 		this.setBackground(new Color(200,200,200));
 		this.setLayout(new FlowLayout(FlowLayout.LEADING));
 		
@@ -46,72 +40,49 @@ public class Pnl_ProfilePerson extends JPanel implements MouseListener{
 		lbName.setText(name);
 		lbName.setFont(fontManager.CalibriBOLD30);
 		
-		JPanel pnl_LastLine = new JPanel();
-		pnl_LastLine.setOpaque(false);
-		
-		lbOnOff = new JLabel();
-		lbOnOff.setText(" ¡Ü ");
-		lbOnOff.setFont(fontManager.CalibriPLAIN25);
-		
 		lbLastMsg = new JLabel();
+		lbLastMsg.setText("No conversation content.");
 		lbLastMsg.setFont(fontManager.CalibriPLAIN25);
 		
-		
-		if(connect.equals("true")){
-			lbOnOff.setForeground(Color.green);
-			lbLastMsg.setForeground(Color.blue);
-			lbLastMsg.setText("OnLine");
-		} else {
-			lbOnOff.setForeground(Color.gray);
-			lbLastMsg.setForeground(Color.gray);
-			lbLastMsg.setText("OffLine");
-		}
-		
-		
-		pnl_LastLine.add(lbOnOff);
-		pnl_LastLine.add(lbLastMsg);
 		lbTLine.add(lbName);
-		lbTLine.add(pnl_LastLine);
+		lbTLine.add(lbLastMsg);
 		
 		this.add(lbIMG);
 		this.add(lbTLine);
 		this.addMouseListener(this);
 		
-		myNum = personNum;
-		personNum++;
+		myNum = roomNum;
+		roomNum++;
 		
 		
-		}
+		
+	}
+
 	@Override
 	public void mouseClicked(MouseEvent arg0) {
 		// TODO Auto-generated method stub
-		System.out.println(myNum);
-		if(dialog_DelFriend==null){
-			dialog_DelFriend = new Dialog_ActionFriend();
-			dialog_DelFriend.setVisible(true);
-		} else{
-			Dialog_ActionFriend.lbMSG.setText("Please Enter ID");
-			Dialog_ActionFriend.lbMSG.setForeground(Color.gray);
-			dialog_DelFriend.setVisible(true);
-		}
-	
-		
+		Pnl_Chat.chatName = lbName.getText();
+		Main.changePnl(Main.pnl_Chat, Main.pnl_ChatIn);
 	}
+
 	@Override
 	public void mouseEntered(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public void mouseExited(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public void mousePressed(MouseEvent arg0) {
 		// TODO Auto-generated method stub
 		
 	}
+
 	@Override
 	public void mouseReleased(MouseEvent arg0) {
 		// TODO Auto-generated method stub

@@ -8,6 +8,7 @@ import javax.swing.JPanel;
 public class ServerMsg {
 	String alarm;
 	AlarmThread aTread;
+	Dialog_OffLineMsg dialog_OffLineMsg;
 
 	private Pnl_Chat pnl_Chat;
 	
@@ -15,17 +16,58 @@ public class ServerMsg {
 		this.pnl_Chat = pnl_Chat;
 	}
 	
-	public void process(String[] split, String s){
+	public void process(String[] split, String s){ //Split 0 -> Action // s -> Full msg
 
 		switch(split[0]){
-			case "/alarm": alarm(split[1]); break;
+			case "/alarm": alarm(s); break; // re
 			case "/reduplication": reduplication(split[0]);; break;
 			case "/possible": possible(split[0]); break;
 			case "/impossible": impossible(split[0]); break;
 			case "/userInfo": userInfo(s); break;
+			case "/userUpdate": userUpdate(); break;
+			case "/maked": maked(split[1]); break;
+			case "/isOnline": isOnline(split[1], split[2]); break;
+			case "/targetOff": targetOff(split[1]); break; // Send impossible msg
+			case "/recvMSG": recvMSG(split[1], split[2]); break; // 1 - ID, 2 - msg
 		}
-		
 	} // process
+
+	private void recvMSG(String string, String string2) {
+		// TODO Auto-generated method stub
+		Pnl_ChatRoom.privateChat(string2);
+		System.out.println(string+"로부터 메세지 옴 ㅡ>"+string2);
+	}
+
+	private void targetOff(String s) {
+		// TODO Auto-generated method stub
+		System.out.println();
+		if(dialog_OffLineMsg==null){
+			dialog_OffLineMsg = new Dialog_OffLineMsg();
+			dialog_OffLineMsg.setVisible(true);
+		} else{
+			Dialog_OffLineMsg.lbMSG.setText("You cannot talk because "+s+" is offline.");
+			Dialog_OffLineMsg.lbMSG.setForeground(Color.red);
+			dialog_OffLineMsg.setVisible(true);
+		}
+	}
+
+	private void isOnline(String name, String isOnline) {
+		// TODO Auto-generated method stub
+		IsOnlineThread isOnlineThread = new IsOnlineThread(name, isOnline);
+		isOnlineThread.start();
+	}
+
+	private void maked(String name) { // Success MakeRoom 
+		// TODO Auto-generated method stub
+		Pnl_Chat.chatRoom.add(new Pnl_ChatFreind(name));
+		Pnl_Chat.updateRoom();
+	}
+
+	private void userUpdate() {
+		// TODO Auto-generated method stub
+		Pnl_Profile.profilePerson.clear();
+		Main.getUserList();
+	}
 
 	private void userInfo(String s) {
 		// TODO Auto-generated method stub
@@ -51,17 +93,17 @@ public class ServerMsg {
 	}
 
 	private void reduplication(String s) {
-
 		Main.alarm.setText("ID already connected");
 		Main.alarm.setForeground(Color.red);
 		Pnl_Login.lbMSG.setText("Please Logout First ID ");
 		Pnl_Login.lbMSG.setForeground(Color.red);
-
 	}
 
 	private void alarm(String s) {
+		
+		String[] tempSplit = s.split(" ", 2);
 
-		Main.alarm.setText(s);
+		Main.alarm.setText(tempSplit[1]);
 		Main.alarm.setForeground(Color.orange);
 
 		aTread = new AlarmThread();

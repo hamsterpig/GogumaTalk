@@ -13,13 +13,15 @@ import javax.swing.JScrollPane;
 
 public class Pnl_Chat extends Pnl_SideBar{
 	
-	JLabel lbTitle, lbMsg;
+	JLabel lbTitle;
+
+	static JLabel lbMsg;
 	
 	JScrollPane scList;
-	ArrayList<Pnl_ChatRoom> chatRoom;
-	JPanel pnlList;
+	static ArrayList<Pnl_ChatFreind> chatRoom;
+	static JPanel pnlList;
 	
-	int rCNT = 0;
+	static int rCNT = 0;
 	
 	static String chatName = "";
 	static int chatNum = 0;
@@ -42,13 +44,12 @@ public class Pnl_Chat extends Pnl_SideBar{
 		scList.getViewport().setBackground(Color.white);
 		scList.setPreferredSize(new Dimension(res.width/3, 710));
 		
-		chatRoom = new ArrayList<Pnl_ChatRoom>();
+		chatRoom = new ArrayList<Pnl_ChatFreind>();
 		
-		for(int i=0; i<3; i++){ // test Room
-			chatRoom.add(new Pnl_ChatRoom());
-			chatRoom.get(i).lbName.setText("Name"+i);
-		}
-		updateRoom();
+		/*for(int i=0; i<2; i++){ // test Room
+			chatRoom.add(new Pnl_ChatFreind("Test"+i));
+		}*/
+		//updateRoom();
 		
 
 		scList.setViewportView(pnlList); // scroll Panel
@@ -56,7 +57,7 @@ public class Pnl_Chat extends Pnl_SideBar{
 		
 	}
 
-	private void updateRoom() {
+	public static void updateRoom() {
 		// TODO Auto-generated method stub
 		for(int i=0; i<chatRoom.size(); i++){
 			pnlList.add(chatRoom.get(i));
@@ -76,7 +77,4 @@ public class Pnl_Chat extends Pnl_SideBar{
 		}
 	}
 	
-	public void update(String name, String msg){
-		
-	}
 }

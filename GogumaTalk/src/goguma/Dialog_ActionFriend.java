@@ -14,21 +14,21 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Dialog_Friend  extends JDialog implements ActionListener, KeyListener{
+public class Dialog_ActionFriend  extends JDialog implements ActionListener, KeyListener{
 	JPanel pnl;
 	JPanel pnl_c, pnl_n, pnl_s, pnl_w, p_e;
 	
 	JTextField txID_Check, txpass_Check, txNeed, txStateFeild;
 	JLabel lbTotal, lbDis, lbInput, lbStateFeild;
 	static JLabel lbMSG;
-	JPanel pnl_c_Line01, pnl_c_Line02, pnl_c_Line03, pnl_c_Line04;
+	JPanel pnl_c_Line01, pnl_c_Line02, pnl_c_Line03, pnl_c_Line04, pnl_c_Line05;
 	
-	JButton btnY, btnN;
+	JButton btnDel, btnChat, btnN;
 	
 	SocketManager socket = SocketManager.getInstance();
 	FontManager fontManeger = FontManager.getInstance();
 	
-	Dialog_Friend(){
+	Dialog_ActionFriend(){
 		pnl = new JPanel(new BorderLayout());
 		pnl_c = new JPanel();
 		pnl_n = new JPanel();
@@ -52,14 +52,19 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 		txpass_Check = new JTextField(12);
 		txNeed = new JTextField(12);
 		
-		btnY = new JButton("Add");
-		btnY.setBackground(new Color(100,100,255));
+		btnDel = new JButton("Del");
+		btnDel.setBackground(new Color(100,100,255));
+		btnDel.setPreferredSize(new Dimension(190,35));
+		btnDel.addActionListener(this);
+		btnChat = new JButton("Send To");
+		btnChat.setBackground(new Color(255,255,100));
+		btnChat.setPreferredSize(new Dimension(190,35));
+		btnChat.addActionListener(this);
 		btnN = new JButton("Exit");
 		btnN.setBackground(new Color(255,100,100));
-		btnY.setPreferredSize(new Dimension(100,60));
-		btnN.setPreferredSize(new Dimension(100,60));
+		btnN.setPreferredSize(new Dimension(190,35));
 		btnN.addActionListener(this);
-		btnY.addActionListener(this);
+		
 		
 		lbMSG = new JLabel();
 		lbMSG.setPreferredSize(new Dimension(200,25));
@@ -73,26 +78,26 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 		pnl_c_Line02 = new JPanel();
 		pnl_c_Line03 = new JPanel();
 		pnl_c_Line04 = new JPanel();
+		pnl_c_Line05 = new JPanel();
 		
 		pnl_c_Line01.add(lbTotal);
 		pnl_c_Line01.add(txID_Check);
-		//pnl_c_Line02.add(lbDis);
-		//pnl_c_Line02.add(txpass_Check);
+		pnl_c_Line02.add(lbMSG);
 		
-		pnl_c_Line03.add(lbMSG);
-		
-		pnl_c_Line04.add(btnY);
-		pnl_c_Line04.add(btnN);
+		pnl_c_Line03.add(btnChat);
+		pnl_c_Line04.add(btnDel);
+		pnl_c_Line05.add(btnN);
 		pnl_c.add(pnl_c_Line01);
 		pnl_c.add(pnl_c_Line02);
 		pnl_c.add(pnl_c_Line03);
 		pnl_c.add(pnl_c_Line04);
+		pnl_c.add(pnl_c_Line05);
 
 		
 		pnl_c.setBackground(Color.white);
-		pnl_c.setPreferredSize(new Dimension(230,170));;
+		pnl_c.setPreferredSize(new Dimension(230,250));;
 		
-		setTitle("Add Friend");
+		setTitle("Action Friend");
 		setDefaultCloseOperation(DISPOSE_ON_CLOSE);
 		setLocationRelativeTo(null);
 		setVisible(false);
@@ -124,20 +129,30 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
-		if(e.getSource()==btnY){
+		if(e.getSource()==btnDel){
 			if(txID_Check.getText().equals("") || txID_Check.getText() == null){
 				lbMSG.setText("Do not enter ID !");
 				lbMSG.setForeground(Color.red);
 			} else {
-				System.out.println("/req/friend " + txID_Check.getText());
-				socket.toServ.println("/req/friend " + txID_Check.getText());
+				System.out.println("/del/friend " + txID_Check.getText());
+				socket.toServ.println("/del/friend " + txID_Check.getText());
 				socket.toServ.flush();
 				txID_Check.setText("");
-				txpass_Check.setText("");
 				this.setVisible(false);
 			}
-			
-		} else if(e.getSource()==btnN){
+		} else if(e.getSource()==btnChat){
+			if(txID_Check.getText().equals("") || txID_Check.getText() == null){
+				lbMSG.setText("Do not enter ID !");
+				lbMSG.setForeground(Color.red);
+			} else {
+				System.out.println("/make/privateChat " + txID_Check.getText());
+				socket.toServ.println("/make/privateChat " + txID_Check.getText());
+				socket.toServ.flush();
+				txID_Check.setText("");
+				
+				this.setVisible(false);
+			}
+		}else if(e.getSource()==btnN){
 			txID_Check.setText("");
 			txpass_Check.setText("");
 			this.setVisible(false);

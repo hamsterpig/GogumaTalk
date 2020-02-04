@@ -17,44 +17,20 @@ import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextField;
 
-public class Pnl_ChatRoom extends JPanel implements ActionListener,KeyListener{
+public class Pnl_ChatIn extends JPanel implements ActionListener,KeyListener{
 	FontManager fontManager = FontManager.getInstance();
 	
-	static JPanel pnl_ChatIn_c;
-
-	JPanel pnl_ChatIn_n;
-
-	JPanel pnl_ChatIn_s;
-
-	JPanel pnlMyChat1;
-
-	JPanel pnlMyChat2;
-	static JPanel pnlYourChat;
-
-	static JPanel pnlYourChat_L;
-
-	static JPanel pnlYourChat_R;
-
-	static JPanel pnlYourName;
-
-	static JPanel pnlYourChat1;
-
-	static JPanel pnlYourChat2;
+	JPanel pnl_ChatIn_c, pnl_ChatIn_n, pnl_ChatIn_s,pnlMyChat1,pnlMyChat2;
+	JPanel pnlYourChat,pnlYourChat_L,pnlYourChat_R,pnlYourName,pnlYourChat1,pnlYourChat2;
 	JButton btnExit,btnDelete,btnFunction;
-	static JTextField tfChat;
-	JLabel lblMyChat;
-
-	static JLabel lblYourChat;
-
-	static JLabel lblYourName;
-
-	static JLabel lblYourImage;
-	static String tmp="";
+	JTextField tfChat;
+	JLabel lblMyChat,lblYourChat,lblYourName,lblYourImage;
+	String tmp="";
 	static JLabel lbFriendName, lbOnOff;
-	static Color bg;
-	static int n=39;
-	static JScrollPane scr_center;
-	Pnl_ChatRoom(){
+	Color bg;
+	int n=39;
+	JScrollPane scr_center;
+	Pnl_ChatIn(){
 		bg =new Color(102,153,255);
 		this.setLayout(new BorderLayout());
 		this.setBackground(Color.black);
@@ -133,7 +109,7 @@ public class Pnl_ChatRoom extends JPanel implements ActionListener,KeyListener{
 		
 		tmp=id;
 	}
-	static void yourChat(String id,String image,String msg,int num){
+	void yourChat(String id,String image,String msg,int num){
 
 		
 		//왼쪽
@@ -192,27 +168,6 @@ public class Pnl_ChatRoom extends JPanel implements ActionListener,KeyListener{
 	private void updateState() {
 		// TODO Auto-generated method stub
 	}
-	public static void privateChat(String msg){
-		System.out.println("dd");
-		String str = new String(msg);
-		int num = str.length();
-		String str2 = new String("");
-		if(num/n>=1){
-			for(int i =1;i<=num/n;i++){
-				str2=str2+str.substring(n*(i-1),i*n)+"<br>";
-				if(i==num/n){
-					str2=str2+str.substring(i*n,str.length());
-				}
-			}
-		}else{
-			str2=str;
-		}
-		yourChat(lbFriendName.getText(),"image","<html>"+str2+"</html>",num/n);
-		pnl_ChatIn_c.revalidate();
-		pnl_ChatIn_c.repaint();
-		scr_center.revalidate();
-		scr_center.repaint();
-	}
 
 	@Override
 	public void actionPerformed(ActionEvent e) {
@@ -221,18 +176,22 @@ public class Pnl_ChatRoom extends JPanel implements ActionListener,KeyListener{
 			System.out.println("dd");
 			Main.changePnl(this, Main.pnl_Chat);
 						
-		}else if(btnFunction==e.getSource()){ // 상대로부터 받음
-			System.out.println("dd");
+		}else if(btnFunction==e.getSource()){
+
 			String str = new String(tfChat.getText());
 			int num = str.length();
 			String str2 = new String("");
 			if(num/n>=1){
+				
 				for(int i =1;i<=num/n;i++){
+					
 					str2=str2+str.substring(n*(i-1),i*n)+"<br>";
+					
 					if(i==num/n){
 						str2=str2+str.substring(i*n,str.length());
 					}
 				}
+				
 			}else{
 				str2=str;
 			}
@@ -252,8 +211,6 @@ public class Pnl_ChatRoom extends JPanel implements ActionListener,KeyListener{
 	public void keyPressed(KeyEvent e) {
 		
 		if(e.getKeyCode()==10){
-			Main.soket.toServ.println("/sendMSG " + lbFriendName.getText() +" "+ tfChat.getText());
-			Main.soket.toServ.flush();
 
 			String str = new String(tfChat.getText());
 			int num = str.length();

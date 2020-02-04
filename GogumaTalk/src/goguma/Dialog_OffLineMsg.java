@@ -14,7 +14,7 @@ import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
-public class Dialog_Friend  extends JDialog implements ActionListener, KeyListener{
+public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyListener{
 	JPanel pnl;
 	JPanel pnl_c, pnl_n, pnl_s, pnl_w, p_e;
 	
@@ -28,7 +28,7 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 	SocketManager socket = SocketManager.getInstance();
 	FontManager fontManeger = FontManager.getInstance();
 	
-	Dialog_Friend(){
+	Dialog_OffLineMsg(){
 		pnl = new JPanel(new BorderLayout());
 		pnl_c = new JPanel();
 		pnl_n = new JPanel();
@@ -125,7 +125,7 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==btnY){
-			if(txID_Check.getText().equals("") || txID_Check.getText() == null){
+/*			if(txID_Check.getText().equals("") || txID_Check.getText() == null){
 				lbMSG.setText("Do not enter ID !");
 				lbMSG.setForeground(Color.red);
 			} else {
@@ -135,7 +135,7 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 				txID_Check.setText("");
 				txpass_Check.setText("");
 				this.setVisible(false);
-			}
+			}*/
 			
 		} else if(e.getSource()==btnN){
 			txID_Check.setText("");
