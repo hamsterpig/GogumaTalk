@@ -7,12 +7,12 @@ import javax.swing.JPanel;
 
 public class ServerMsg {
 	String alarm;
-	AlarmThread aTread;
+	ThreadAlarm aTread;
 	Dialog_OffLineMsg dialog_OffLineMsg;
 
-	private Pnl_Chat pnl_Chat;
+	private PnlChat pnl_Chat;
 	
-	public ServerMsg(Pnl_Chat pnl_Chat){
+	public ServerMsg(PnlChat pnl_Chat){
 		this.pnl_Chat = pnl_Chat;
 	}
 	
@@ -23,16 +23,29 @@ public class ServerMsg {
 			case "/reduplication": reduplication(split[0]);; break;
 			case "/possible": possible(split[0]); break;
 			case "/impossible": impossible(split[0]); break;
-			case "/userInfo": userInfo(s); break;
+			case "/userInfo": userInfo(s); break; 
 			case "/userUpdate": userUpdate(); break;
 			case "/maked": maked(split[1]); break;
 			case "/isOnline": isOnline(split[1], split[2]); break;
 			case "/targetOff": targetOff(split[1]); break; // Send impossible msg
 			case "/recvMSG": recvMSG(split[1], s); break; // 1 - ID, 2 - msg
 			case "/okMakeRoom": okMakeRoom(s); break;
-			
+			case "/quit": quit(); break;
+			case "/outSider": outSider(); break;	
 		}
 	} // process
+
+	private void outSider() {
+		// TODO 자동 생성된 메소드 스텁
+		PnlProfile.profilePerson.clear();
+		PnlProfile.updatePerson();
+	}
+
+	private void quit() {
+		// TODO Auto-generated method stub
+		ThreadQuit threadQuit = new ThreadQuit();
+		threadQuit.start();
+	}
 
 	private void okMakeRoom(String s) {
 		// TODO Auto-generated method stub
@@ -46,13 +59,23 @@ public class ServerMsg {
 	private void recvMSG(String name, String msg) {
 		// TODO Auto-generated method stub
 		String[] tempSplit = msg.split("/recvMSG "+name);
-		System.out.println("--->"+msg);
 		
-		Pnl_ChatRoom.privateChat(tempSplit[1]);
+		int temp = 0;
+		for(int i=0; i<PnlChat.chatRoom.size();i++){
+			if(PnlChat.chatRoom.get(i).lbName.getText().equals(name)){
+				temp = i;
+				break;
+			}
+		}
+		PnlChat.chatRoom.get(temp).lbLastMsg.setText(tempSplit[1]);
+		PnlChat.chatRoom.get(temp).lbTLine.setBackground(new Color(255,255,170));
+		PnlChat.chatRoom.get(temp).setBackground(new Color(255,255,170));
+		
+		PnlChatRoom.privateChat(tempSplit[1]);
 		System.out.println(name+"로부터 메세지 옴 ㅡ>"+tempSplit[1]);
 		
 		//
-		RecvMsgThread recvMsgThread = new RecvMsgThread(name);
+		ThreadRecvMsg recvMsgThread = new ThreadRecvMsg(name);
 		recvMsgThread.start();
 	}
 
@@ -72,7 +95,7 @@ public class ServerMsg {
 	private void isOnline(String name, String isOnline) {
 		// TODO Auto-generated method stub
 
-		IsOnlineThread isOnlineThread = new IsOnlineThread(name, isOnline);
+		ThreadIsOnline isOnlineThread = new ThreadIsOnline(name, isOnline);
 		isOnlineThread.start();
 
 		
@@ -80,23 +103,23 @@ public class ServerMsg {
 
 	private void maked(String name) { // Success MakeRoom 
 		// TODO Auto-generated method stub
-		Pnl_Chat.chatRoom.add(new Pnl_ChatFreind(name));
-		Pnl_Chat.updateRoom();
+		PnlChat.chatRoom.add(new PnlChatFreind(name));
+		PnlChat.updateRoom();
 		
-		NewChatThread newChatThread = new NewChatThread(name);
+		ThreadNewChat newChatThread = new ThreadNewChat(name);
 		newChatThread.start();
 	}
 
 	private void userUpdate() {
 		// TODO Auto-generated method stub
-		Pnl_Profile.profilePerson.clear();
+		PnlProfile.profilePerson.clear();
 		Main.getUserList();
 	}
 
 	private void userInfo(String s) {
 		// TODO Auto-generated method stub
 		String[] tempSplit = s.split(" ");
-		Pnl_Profile.addPerson(tempSplit[1], tempSplit[2]);
+		PnlProfile.addPerson(tempSplit[1], tempSplit[2]);
 		
 	}
 
@@ -105,13 +128,13 @@ public class ServerMsg {
 		Main.isLogin = false;
 		Main.alarm.setText("ID or PASSWORD is Invalid");
 		Main.alarm.setForeground(Color.red);
-		Pnl_Login.lbMSG.setText("Forget (ID or Password)?");
-		Pnl_Login.lbMSG.setForeground(Color.red);
+		PnlLogin.lbMSG.setText("Forget (ID or Password)?");
+		PnlLogin.lbMSG.setForeground(Color.red);
 	}
 
 	private void possible(String s) {
 		
-		WellcomeThread wellcomeThread = new WellcomeThread();
+		ThreadWellcome wellcomeThread = new ThreadWellcome();
 		wellcomeThread.start();
 		
 	}
@@ -119,8 +142,8 @@ public class ServerMsg {
 	private void reduplication(String s) {
 		Main.alarm.setText("ID already connected");
 		Main.alarm.setForeground(Color.red);
-		Pnl_Login.lbMSG.setText("Please Logout First ID ");
-		Pnl_Login.lbMSG.setForeground(Color.red);
+		PnlLogin.lbMSG.setText("Please Logout First ID ");
+		PnlLogin.lbMSG.setForeground(Color.red);
 	}
 
 	private void alarm(String s) {
@@ -130,7 +153,7 @@ public class ServerMsg {
 		Main.alarm.setText(tempSplit[1]);
 		Main.alarm.setForeground(Color.orange);
 
-		aTread = new AlarmThread();
+		aTread = new ThreadAlarm();
 		aTread.start();
 	}
 }

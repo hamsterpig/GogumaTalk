@@ -27,8 +27,8 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 	
 	static String targetName;
 	
-	SocketManager socket = SocketManager.getInstance();
-	FontManager fontManeger = FontManager.getInstance();
+	ManagerSocket socket = ManagerSocket.getInstance();
+	ManagerFont fontManeger = ManagerFont.getInstance();
 	
 	Dialog_ActionFriend(){
 		pnl = new JPanel(new BorderLayout());

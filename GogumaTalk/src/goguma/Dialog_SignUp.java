@@ -25,8 +25,8 @@ public class Dialog_SignUp  extends JDialog implements ActionListener, KeyListen
 	
 	JButton btnY, btnN;
 	
-	SocketManager socket = SocketManager.getInstance();
-	FontManager fontManeger = FontManager.getInstance();
+	ManagerSocket socket = ManagerSocket.getInstance();
+	ManagerFont fontManeger = ManagerFont.getInstance();
 	
 	Dialog_SignUp(){
 		pnl = new JPanel(new BorderLayout());
@@ -137,14 +137,14 @@ public class Dialog_SignUp  extends JDialog implements ActionListener, KeyListen
 				socket.toServ.flush();
 				txID_Check.setText("");
 				txpass_Check.setText("");
-				Pnl_Login.enabled(true);
+				PnlLogin.enabled(true);
 				this.setVisible(false);
 			}
 			
 		} else if(e.getSource()==btnN){
 			txID_Check.setText("");
 			txpass_Check.setText("");
-			Pnl_Login.enabled(true);
+			PnlLogin.enabled(true);
 			this.setVisible(false);
 		}
 	}

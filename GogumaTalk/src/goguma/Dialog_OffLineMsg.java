@@ -25,8 +25,8 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 	
 	JButton btnY, btnN;
 	
-	SocketManager socket = SocketManager.getInstance();
-	FontManager fontManeger = FontManager.getInstance();
+	ManagerSocket socket = ManagerSocket.getInstance();
+	ManagerFont fontManeger = ManagerFont.getInstance();
 	
 	Dialog_OffLineMsg(){
 		pnl = new JPanel(new BorderLayout());

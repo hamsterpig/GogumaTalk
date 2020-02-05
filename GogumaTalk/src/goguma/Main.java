@@ -19,47 +19,46 @@ import javax.swing.JTextField;
 import javax.swing.UIManager;
 
 public class Main extends JFrame implements ActionListener {
-	static Pnl_ChatRoom pnl_ChatIn;
-	static Pnl_Profile pnl_Profile;
-	static Pnl_Login pnl_Login;
-	static Pnl_Chat pnl_Chat;
-	Pnl_SideBar pnl_SideBar;
-	static Pnl_MultiChat pnl_MultiChat;
-	Pnl_Setting pnl_Setting;
+	static PnlChatRoom pnl_ChatIn;
+	static PnlProfile pnl_Profile;
+	static PnlLogin pnl_Login;
+	static PnlChat pnl_Chat;
+	PnlSideBar pnl_SideBar;
+	static PnlMultiChat pnl_MultiChat;
+	static PnlSetting pnl_Setting;
 
 	static JPanel pnlMenubar;
 	static JLabel alarm, alarmSpace;
 	static JPanel pnl;
 	static Color colorTheme;
-	static RecvThread recv;
+	static ThreadRecv recv;
 	static boolean isLogin = false;
 	
-	static SocketManager soket;
+	static ManagerSocket soket;
 	
 	Main() {
-		FontManager fontManager = FontManager.getInstance();
-		ColorManager colorManager = ColorManager.getInstance();
+		ManagerFont fontManager = ManagerFont.getInstance();
+		ManagerColor colorManager = ManagerColor.getInstance();
 		
-		pnl_ChatIn = new Pnl_ChatRoom();
+		pnl_ChatIn = new PnlChatRoom();
 		
 		colorTheme = colorManager.kakao; // setting Theme
 
-		Dimension res = Toolkit.getDefaultToolkit().getScreenSize(); // Frame
 		// Default
 		// Size
 		pnl = new JPanel();
 		pnl.setLayout(new BorderLayout());
 		
-		pnl.setPreferredSize(new Dimension(640, 1080 - 100));
-		pnl.setLocation((res.width / 2) - (this.getWidth() / 2),
+		pnl.setPreferredSize(new Dimension(640, 980));
+		pnl.setLocation(960 - (this.getWidth() / 2),
 				(1080 / 2) - (this.getHeight() / 2));
 
 		//add Panel
-		pnl_Login = new Pnl_Login();
-		pnl_Profile = new Pnl_Profile();
-		pnl_Chat = new Pnl_Chat();
-		pnl_MultiChat = new Pnl_MultiChat();
-		pnl_Setting = new Pnl_Setting();
+		pnl_Login = new PnlLogin();
+		pnl_Profile = new PnlProfile();
+		pnl_Chat = new PnlChat();
+		pnl_MultiChat = new PnlMultiChat();
+		pnl_Setting = new PnlSetting();
 		
 		// ActionListener
 		pnl_Login.btnLogin.addActionListener(this);
@@ -109,7 +108,7 @@ public class Main extends JFrame implements ActionListener {
 		setDefaultCloseOperation(EXIT_ON_CLOSE);
 		setVisible(true);
 		
-		recv = new RecvThread(new ServerMsg(pnl_Chat));
+		recv = new ThreadRecv(new ServerMsg(pnl_Chat));
 		recv.start();
 
 	}
@@ -127,20 +126,25 @@ public class Main extends JFrame implements ActionListener {
 	}
 	
 	static void changePnl(JPanel p1, JPanel p2){
-		soket = SocketManager.getInstance();
-		Pnl_Profile.profilePerson.clear();
-		Pnl_ProfilePerson.personNum = 0;
+		soket = ManagerSocket.getInstance();
+		PnlProfile.profilePerson.clear();
+		PnlProfilePerson.personNum = 0;
+		
 		if(p2==pnl_Profile && isLogin==true){
 			getUserList(); // 리스트 재요청
 		}
 		
-
-		
 		if(p2==pnl_ChatIn){
-			Pnl_ChatRoom.lbFriendName.setText(Pnl_Chat.chatName);
-			System.out.println(Pnl_Chat.chatName);
-			Pnl_ChatRoom.lbFriendName.revalidate();
-			Pnl_ChatRoom.lbFriendName.repaint();
+			PnlChatRoom.lbFriendName.setText(PnlChat.chatName);
+			System.out.println(PnlChat.chatName);
+			PnlChatRoom.lbFriendName.revalidate();
+			PnlChatRoom.lbFriendName.repaint();
+		}
+		
+		if(p2==pnl_Chat){
+			pnl_Profile.btnChat.setIcon(Function.lbImageSetSize("img/chatting.png", 60, 60)); // img chage
+			pnl_MultiChat.btnChat.setIcon(Function.lbImageSetSize("img/chatting.png", 60, 60)); // img chage
+			pnl_Setting.btnChat.setIcon(Function.lbImageSetSize("img/chatting.png", 60, 60)); // img chage
 		}
 		
 		Main.pnl.remove(p1);
@@ -160,6 +164,9 @@ public class Main extends JFrame implements ActionListener {
 			changePnl(pnl_Login, pnl_Profile);
 		} else if(e.getSource() == pnl_Profile.btnLogout){
 			changePnl(pnl_Profile, pnl_Login);
+			Main.isLogin = false;
+			soket.toServ.println("/Logout "+pnl_Profile.lbProfile.getText());
+			soket.toServ.flush();
 		} else if(e.getSource() == pnl_Profile.btnChat){
 			changePnl(pnl_Profile, pnl_Chat);
 		} else if(e.getSource() == pnl_Profile.btnMultiChat){
@@ -167,7 +174,7 @@ public class Main extends JFrame implements ActionListener {
 		} else if(e.getSource() == pnl_Profile.btnSetting){ //
 			changePnl(pnl_Profile, pnl_Setting);
 		} else if(e.getSource() == pnl_Chat.btnProfile){
-			changePnl(pnl_Chat, pnl_Profile); 
+			changePnl(pnl_Chat, pnl_Profile);
 		} else if(e.getSource() == pnl_Chat.btnChat){
 			changePnl(pnl_Chat, pnl_Chat);
 		} else if(e.getSource() == pnl_Chat.btnMultiChat){

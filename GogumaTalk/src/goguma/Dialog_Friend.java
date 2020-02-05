@@ -11,6 +11,7 @@ import java.awt.event.KeyListener;
 import javax.swing.JButton;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
+import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 
@@ -25,8 +26,8 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 	
 	JButton btnY, btnN;
 	
-	SocketManager socket = SocketManager.getInstance();
-	FontManager fontManeger = FontManager.getInstance();
+	ManagerSocket socket = ManagerSocket.getInstance();
+	ManagerFont fontManeger = ManagerFont.getInstance();
 	
 	Dialog_Friend(){
 		pnl = new JPanel(new BorderLayout());
@@ -129,12 +130,36 @@ public class Dialog_Friend  extends JDialog implements ActionListener, KeyListen
 				lbMSG.setText("Do not enter ID !");
 				lbMSG.setForeground(Color.red);
 			} else {
-				System.out.println("/req/friend " + txID_Check.getText());
-				socket.toServ.println("/req/friend " + txID_Check.getText());
-				socket.toServ.flush();
-				txID_Check.setText("");
-				txpass_Check.setText("");
-				this.setVisible(false);
+				boolean tempOverray = false;
+				for(int i=0; i<PnlProfile.profilePerson.size();i++){ // 아이디 중복이 없을 경우 추가 요청
+					if(PnlProfile.profilePerson.get(i).lbName.getText().equals(txID_Check.getText())){
+						tempOverray = true;
+						break;
+					}
+				}
+				
+				if(Main.pnl_Profile.lbProfile.getText().replace(" ", "").equals(txID_Check.getText())){ // 자신과 같은지
+					//System.out.println("자신은 친구로 추가할 수 없습니다.");
+					JOptionPane.showMessageDialog(null, "자신은 친구로 추가할 수 없습니다 T^T");
+					this.setVisible(false);
+					return;
+				}
+				System.out.println(Main.pnl_Profile.lbProfile.getText());
+				System.out.println(txID_Check.getText());
+				
+				if(tempOverray==false){
+					System.out.println("/req/friend " + txID_Check.getText());
+					socket.toServ.println("/req/friend " + txID_Check.getText());
+					socket.toServ.flush();
+					txID_Check.setText("");
+					txpass_Check.setText("");
+					this.setVisible(false);
+				} else{
+					System.out.println("이미 있는 아이디입니다.");
+					JOptionPane.showMessageDialog(null, txID_Check.getText()+"님은 이미 친구입니다...");
+					this.setVisible(false);
+				}
+				System.out.println("---->"+tempOverray);
 			}
 			
 		} else if(e.getSource()==btnN){

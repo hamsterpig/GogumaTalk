@@ -11,11 +11,11 @@ public class Dialog_PassWord extends JDialog implements ActionListener{
 	JTextField tfPassword;
 	JButton btnCheck,btnCancel;
 	String pw="123";
-	static Pnl_MultiChat mtc;
+	static PnlMultiChat mtc;
 	int pnlNum;
 	String userId;
 	
-	public Dialog_PassWord(Pnl_MultiChat multichat,String password,int arrayNum,String id){//이전패널,비번,방의 arrayNumber
+	public Dialog_PassWord(PnlMultiChat multichat,String password,int arrayNum,String id){//이전패널,비번,방의 arrayNumber
 		setSize(250,200);
 		setLocationRelativeTo(null);
 		mtc=multichat;

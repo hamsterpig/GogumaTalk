@@ -25,14 +25,14 @@ public class PnlOpenChat extends JPanel implements ActionListener,Runnable{
 	int pnlX=150,pnlY=150 ,btnX=85,btnY=50,height = 710;
 	int userCur=0; //방의 유저 수
 	int userMax=6; //최대 유저수
-	Pnl_MultiChat mtc;
+	PnlMultiChat mtc;
 	int userNum; //유저의 array.get(넘버)
 	String master="",myId="";
 	boolean state = true;
 	
 	static int staticNum = 0;
 	int myNum = 0;
-	PnlOpenChat(Pnl_MultiChat multichat,int arrayMax,int arraynum,String userId){ 
+	PnlOpenChat(PnlMultiChat multichat,int arrayMax,int arraynum,String userId){ 
 		
 		myNum = staticNum;
 		staticNum++;

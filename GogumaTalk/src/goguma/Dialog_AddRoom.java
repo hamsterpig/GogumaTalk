@@ -20,9 +20,9 @@ public class Dialog_AddRoom extends JDialog implements ItemListener,
 	String btnimg, master = "";
 	int INIT_VAL = 2, arrayMax = 6, curnum = 0;
 	boolean pwCheck = false;
-	Pnl_MultiChat multichat;
+	PnlMultiChat multichat;
 
-	Dialog_AddRoom(Pnl_MultiChat mtc, String userId) {
+	Dialog_AddRoom(PnlMultiChat mtc, String userId) {
 		this.setSize(350, 380);
 		this.setLocationRelativeTo(null);
 		master = userId;
@@ -148,7 +148,7 @@ public class Dialog_AddRoom extends JDialog implements ItemListener,
 							.isSelected() == true))) {
 			} else {
 				System.out.println();
-				multichat.pnlCenter.add(new Pnl_MultiChatRoom(multichat,
+				multichat.pnlCenter.add(new PnlMultiChatRoom(multichat,
 						tfTitle.getText(), btnimg, tfPassWord.getText(),
 						tfContents.getText(), slidMaxNum.getValue(), curnum));
 				multichat.arrayMax = slidMaxNum.getValue();
