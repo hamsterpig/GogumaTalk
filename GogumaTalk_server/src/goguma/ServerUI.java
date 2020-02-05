@@ -158,7 +158,7 @@ public class ServerUI extends JFrame implements ActionListener{
 		
 		///////////////RoomTable
 		roomColumn = new Vector<String>();
-		roomColumn.addElement("RoomNumber");
+		
 		roomColumn.addElement("RoomName");
 		roomColumn.addElement("Password");
 		roomColumn.addElement("PeopleNumber");
@@ -166,14 +166,14 @@ public class ServerUI extends JFrame implements ActionListener{
 		
 		roomModel = new DefaultTableModel(roomColumn,0);
 		roomRow = new Vector<String>();
-		roomRow.addElement("1");
+		
 		roomRow.addElement("PlayChat");
 		roomRow.addElement("true");
 		roomRow.addElement("5/8");
 		
 		roomModel.addRow(roomRow);
 		roomRow = new Vector<String>();
-		roomRow.addElement("2");
+		
 		roomRow.addElement("We like the party");
 		roomRow.addElement("false");
 		roomRow.addElement("3/8");
@@ -373,7 +373,7 @@ public class ServerUI extends JFrame implements ActionListener{
 			}
 		}
 	}
-	public void kickBackUser(String userName) {
+	public void kickBackUser(String userName, boolean state) {
 		if(userTable.getRowCount() != 0) {
 			for(int i=0; i<userTable.getRowCount();i++) {
 				if(userName.equals((String)userTable.getValueAt(i, 0))) {
@@ -385,9 +385,13 @@ public class ServerUI extends JFrame implements ActionListener{
 			}
 			if(hm.containsKey(userName)) {
 				synchronized (hm) {
-					PrintWriter printWriter = (PrintWriter) hm.get(userName);
-					printWriter.println("/alarm 서버로부터 강퇴되었습니다.");
-					printWriter.flush();
+					if(state == true){
+						PrintWriter printWriter = (PrintWriter) hm.get(userName);
+						printWriter.println("/alarm 서버로부터 강퇴되었습니다.");
+						printWriter.flush();
+						printWriter.println("/quit");
+						printWriter.flush();
+					}
 					hm.remove(userName);	
 					//System.out.println(userName+"님이 서버로부터 강퇴되었습니다.");
 				}
@@ -405,7 +409,28 @@ public class ServerUI extends JFrame implements ActionListener{
 			}			
 		}
 	}
-		
+	public void editOpenChat(String title, String pw, String max, boolean state) {
+		synchronized (roomTable) {
+			if(state == true) {
+				roomRow = new Vector<String>();			
+				roomRow.addElement(title);
+				roomRow.addElement(pw);
+				roomRow.addElement(max);			
+				roomModel.addRow(roomRow);
+			}
+		}
+	}
+	public void openChatTableUpdate(String title, String max) {
+		if(roomTable.getRowCount() != 0) {
+			for(int i=0; i<roomTable.getRowCount();i++) {
+				if(title.equals((String)roomTable.getValueAt(i, 0))) {
+					roomTable.setValueAt(max, i, 2);
+				}
+			}
+		}
+
+	}
+	
 	public static void main(String[] args) {
 		// TODO Auto-generated method stub
 		try{
@@ -442,9 +467,10 @@ public class ServerUI extends JFrame implements ActionListener{
 		}////////////KickBack
 		else if(e.getSource() == btnKickback){
 			String str = jfId.getText();
-			kickBackUser(str);		
+			kickBackUser(str,true);		
 		}
 			
 	}
+	
 
 }

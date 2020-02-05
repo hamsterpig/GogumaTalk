@@ -28,13 +28,14 @@ public class ChatServer {
 			}catch(Exception e){
 					System.out.println("ERROR");
 			}
-			serverUI = ServerUI.getInstance();	
+				
 			ServerSocket server = new ServerSocket(10001);
 		
 			System.out.println("접속을 기다립니다.");
 			
 			hm = Hashmap.getInstance();
 			dataBase = DB.getInstance();
+			serverUI = ServerUI.getInstance();
 			//wait client
 			while(true){
 				Socket sock = server.accept();
@@ -109,6 +110,17 @@ public class ChatServer {
 						System.out.println("id: "+str[1]+" pw: "+str[2]+"로 서버에게 로그인을 요청합니다.");
 						dupleFlag = dataBase.logIn(str[1],str[2],printWriter,ip);
 					}
+					if(line.indexOf("/reg") == 0){//회원가입 요청
+						String str[] = line.split(" ");
+						id = str[1];
+						pw = str[2];
+						System.out.println("회원가입을 요청합니다. id: "+id+", pw: "+pw);
+						dataBase.signUp(id, pw, printWriter);
+					}
+					if(line.indexOf("/Logout") == 0){//회원가입 요청
+						System.out.println("로그아웃을 요청합니다. id : "+id);
+						dataBase.logOut(id);
+					}
 					if(line.indexOf("/req/user") == 0){//유저의 친구목록 요청
 						System.out.println("친구목록을 요청합니다. id : "+id);
 						dataBase.sendFriendsList(id,printWriter);
@@ -138,7 +150,7 @@ public class ChatServer {
 				}
 			}catch(Exception ex){
 				System.out.println("server thread run : "+ex);
-				//ex.printStackTrace();
+				ex.printStackTrace();
 			}finally{
 				dataBase.userClose(id, ip, br, printWriter, dupleFlag);	
 			}

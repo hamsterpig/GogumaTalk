@@ -29,7 +29,8 @@ public class DB {
 		friendList = new ArrayList<String>(30);
 		userList = new HashMap<String, ArrayList<String>>();
 		privateChatList = new HashMap<String, ArrayList<String>>();
-		openRoom = new HashMap<String, String>();
+		//openRoom = new HashMap<String, ArrayList>();
+		openRoom = OpenRoom.getInstance();
 		try {
 			brMember = new BufferedReader(new FileReader("profile/member.txt"));
 			brFriend = new BufferedReader(new FileReader("profile/friends.txt"));
@@ -84,12 +85,12 @@ public class DB {
 			}
 			pwMember.println(id+"/"+pw);
 			pwMember.flush();
-			pwFriend.println(id+"/");
+			pwFriend.println(id);
 			pwFriend.flush();
 			System.out.println("회원가입이 되었습니다.");
+			printWriter.flush();
+			printUserMap();
 		}
-		printWriter.flush();
-		printUserMap();
 	}
 	
 	public boolean logIn(String id, String pw, PrintWriter printWriter, String ip) {
@@ -148,11 +149,10 @@ public class DB {
 	}
 	
 	public void sendFriendsList(String id, PrintWriter printWriter) {
-		if(userList.containsKey(id) && (userList.get(id) != null)){
+		if(userList.containsKey(id) && (userList.get(id) != null && !userList.get(id).isEmpty())){
 			ArrayList<String> tempArr = userList.get(id);
 				String isExist = null;
 				for(int i=0;i<tempArr.size();i++){
-					//System.out.print(tempArr.get(i)+" ");
 					synchronized (hm) {
 						if(hm.containsKey(tempArr.get(i))) {
 							isExist = "true";
@@ -164,6 +164,9 @@ public class DB {
 					printWriter.flush();
 				}
 			
+		}else{
+			printWriter.println("/outSider");
+			printWriter.flush();
 		}
 	
 	}	
@@ -171,36 +174,116 @@ public class DB {
 	public void editFriend(String user, String line, boolean editState){
 		String str[] = line.split(" ");
 		String targetID = str[1];
+		System.out.print("친구 수정을 합니다. 요청자 ID : "+user+" 대상자 : "+targetID);
+		if(editState == true){
+			System.out.println(" 추가");
+		}else{
+			System.out.println(" 삭제");
+		}
 		synchronized (userList) {
 			if(userList.containsKey(user) && userList.containsKey(targetID)){
-				ArrayList<String> tempArr = userList.get(user);
-				if(editState == true) {					
-					tempArr.add(targetID);
-					tempArr = userList.get(targetID);
-					tempArr.add(user);
-				}else {
-					tempArr.remove(targetID);
+				ArrayList<String> tempArr; 
+				if(editState == true) { //상태가 추가
+					if(userList.get(user) != null){ 
+						tempArr = userList.get(user);		
+						if(!(tempArr.contains(targetID))){
+							if(!user.equals(targetID)){
+								tempArr.add(targetID);
+							}
+						}
+					}else{
+						tempArr = new ArrayList<String>();		
+						tempArr.add(targetID);
+					}
+					
+					if(userList.get(targetID) != null){
+						tempArr = userList.get(targetID);
+						if(!tempArr.contains(user)){
+							if(!targetID.equals(user)){
+								tempArr.add(user);
+							}
+						}
+					}else{
+						tempArr = new ArrayList<String>();
+						tempArr.add(user);
+					}			
+					updateFriends();
+					sendMassage(user, targetID,true);
+					//sendUpdateMessage(user, targetID, editState);
+					//sendUpdateMessage(targetID, editState);
+				}else {//상태가 삭제
+					System.out.println("삭제합니다~");
 					tempArr = userList.get(targetID);
 					tempArr.remove(user);
+					tempArr = userList.get(user);
+					tempArr.remove(targetID);
+					updateFriends();
+					sendMassage(user, targetID, false);
 				}
-				updateFriends();
-				sendUpdateMessage(user, targetID, editState);
+				
 			};
 		}
 	}
 
+	private void sendMassage(String user, String targetID, boolean state) {
+		System.out.println(""+state);
+		synchronized (hm) {
+			PrintWriter printWriter;
+			if(state == true){//추가
+				if(hm.containsKey(user)){				
+					printWriter = (PrintWriter) hm.get(user);
+					if(hm.containsKey(targetID)){
+						printWriter.println("/userInfo "+targetID+" true");
+					}else{
+						printWriter.println("/userInfo "+targetID+" false");
+					}				
+					printWriter.flush();
+				}
+				if(hm.containsKey(targetID)){
+					printWriter = (PrintWriter) hm.get(targetID);
+					if(hm.containsKey(user)){
+						printWriter.println("/userInfo "+user+" true");
+					}else{
+						printWriter.println("/userInfo "+user+" false");
+					}
+					printWriter.flush();		
+				}
+			}else{//삭제
+				if(hm.containsKey(user)){				
+					printWriter = (PrintWriter) hm.get(user);
+					if(hm.containsKey(targetID)){
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}else{
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}
+				}
+				if(hm.containsKey(targetID)){
+					printWriter = (PrintWriter) hm.get(targetID);
+					if(hm.containsKey(user)){
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}else{
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}
+				}
+			}	
+		}
+	}
 	public void updateFriends(){
 			try {
 				pwFriend = new PrintWriter(new FileWriter(new File("profile/friends.txt")));
 				synchronized (userList) {
 					Iterator<String> mapIter = userList.keySet().iterator();
+					ArrayList<String> tempArr;
 					while(mapIter.hasNext()){
 						String key = mapIter.next();
-						ArrayList<String> tempArr = new ArrayList<String>();
-						 
+												 
 						if(userList.get(key) == null){
-							pwFriend.println(key+"/");							
-						}else{
+							pwFriend.println(key);							
+						}else{							
 							tempArr = userList.get(key);
 							pwFriend.print(key);
 							for(int i=0;i<tempArr.size();i++){
@@ -221,6 +304,7 @@ public class DB {
 		
 	}
 	public void sendUpdateMessage(String userA, String userB, boolean editSate){
+	//public void sendUpdateMessage(String userA, boolean editSate){
 		synchronized (hm) {
 			if(hm.containsKey(userA)){
 				PrintWriter printWriter = (PrintWriter) hm.get(userA);
@@ -314,6 +398,9 @@ public class DB {
 		}
 		
 	}
+	public void logOut(String id){
+		serverUI.kickBackUser(id,false);
+	}
 	public void userClose(String id, String ip, BufferedReader buffReader, PrintWriter printWriter, boolean dupleFlag) {		
 		System.out.println("종료합니다. ID : "+id+" ip : "+ip);
 		synchronized (userList) {
@@ -337,7 +424,7 @@ public class DB {
 				if(serverUI.existIP(ip)) {
 					if(dupleFlag == false) {
 						System.out.println(id+"님이 종료 되었습니다.");
-						serverUI.kickBackUser(id);
+						serverUI.kickBackUser(id,false);
 						hm.remove(id);
 					}
 				}
@@ -370,17 +457,18 @@ public class DB {
 				printWriter.flush();
 			}else{
 				ArrayList roomArr = new ArrayList();
-				roomArr.add(str[1]);
-				roomArr.add(str[2]);
-				roomArr.add(str[3]);
-				roomArr.add(str[4]);
-				roomArr.add(str[5]);
+				roomArr.add(title);
+				roomArr.add(imgNum);
+				roomArr.add(pw);
+				roomArr.add(max);
+				roomArr.add(hashtag);
 				ArrayList<String> list = new ArrayList<String>();
 				roomArr.add(list);
 				openRoom.put(title, roomArr);	
 				String tempStr = "/okMakeRoom ㈛"+str[1]+"㈛"+str[2]+"㈛"+str[3]+"㈛"+str[4]+"㈛"+str[5];
 				printWriter.println(tempStr);
 				printWriter.flush();	
+				serverUI.editOpenChat(title, pw, "1/"+max, true);
 				SprayChatRoom(title,tempStr);
 			}		
 		}		
@@ -412,14 +500,16 @@ public class DB {
 		
 	}
 	public void accessRoom(String id, String line){
-		String str[] = line.split(" ",2);
+		String str[] = line.split(" ",3);
 		String title = str[1];
+		String pw = str[2];
 		System.out.println("오픈채팅방에 들어 가길 요청합니다. 요청자 ID : "+id+" 대상 방 이름  : "+title);
 		synchronized (openRoom) {
 			if(openRoom.containsKey(title)){
 				ArrayList tempArr = (ArrayList) openRoom.get(title);
-				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);
-				int tempInt = Integer.parseInt(tempList.get(3));
+				String maximum = (String)tempArr.get(3);
+				int tempInt = Integer.parseInt((String)tempArr.get(3));
+				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);				
 				if((tempInt<=tempList.size()) && !(tempList.contains(id))){
 					synchronized (hm) {
 						PrintWriter printWriter = (PrintWriter) hm.get(id);
@@ -433,11 +523,14 @@ public class DB {
 						printWriter.println("/accessSuccess");
 						printWriter.flush();
 					}
+					maximum = (tempList.size()+1)+"/"+maximum;
+					serverUI.openChatTableUpdate(title, maximum);
 				}
 			}
 		}
 	}
 	public void printUserMap(){
+		getAllUser();
 		Iterator<String> mapIter = userList.keySet().iterator();
 
 		while(mapIter.hasNext()){
