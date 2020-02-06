@@ -8,10 +8,16 @@ import java.awt.GridLayout;
 import java.awt.Toolkit;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+import java.io.BufferedWriter;
+import java.io.File;
+import java.io.FileWriter;
+import java.io.IOException;
 import java.util.ArrayList;
 
 import javax.swing.BoxLayout;
+import javax.swing.ImageIcon;
 import javax.swing.JButton;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
@@ -26,6 +32,7 @@ public class PnlProfile extends PnlSideBar implements ActionListener {
 	Dialog_Friend dialog_AddFriend;
 	JLabel isOnoff;
 	JButton btnEditProfile;
+	JFileChooser jfc;
 
 	static ArrayList<PnlProfilePerson> profilePerson = new ArrayList<PnlProfilePerson>();
 
@@ -182,12 +189,21 @@ public class PnlProfile extends PnlSideBar implements ActionListener {
 		}
 	}
 
-	private void setTheme(Color c) { // TODO Auto-generated method stub
+	public void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);
 		lbSpace.setBackground(c);
 		pnlMenu.setBackground(c);
 		pnlProfileLine.setBackground(new Color(255,255,230));
 		btnProfile.setBackground(c);
+		pnlProfileLine.setBackground(c);
+		pnlMenu.setBackground(c);
+		pnlUnderMenu.setBackground(c);
+		super.setBackground(c);
+		
+		if(Main.colorTheme == colorManager.violet) {
+			pnl_North.setBackground(Color.black);
+		}
+		
 	}
 
 
@@ -203,6 +219,24 @@ public class PnlProfile extends PnlSideBar implements ActionListener {
 				Dialog_Friend.lbMSG.setForeground(Color.gray);
 				dialog_AddFriend.setVisible(true);
 			}
+		} else if(e.getSource()==btnEditProfile) {
+			jfc = new JFileChooser();
+			int returnVal = jfc.showSaveDialog(null);
+	        if(returnVal == 0) {
+	            File file = jfc.getSelectedFile();
+	            try {
+					System.out.println("당신이 저장할 파일은 " + file.getCanonicalPath() + " 입니다.");
+					lbProfileImg.setIcon(Function.imageSetSize(new ImageIcon(file.getCanonicalPath()), 60, 60));
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	         
+	            
+	             
+
+	             
+	        }
 		}
 	
 	}

@@ -61,11 +61,10 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 		pnlNorth.add(btnAdd);
 		
 		pnlCenter = new JPanel();//
-		pnlCenter.setLayout(new FlowLayout(FlowLayout.LEADING));
-		pnlCenter.setPreferredSize(new Dimension(res.width/3,1200));
-		scrCenter = new JScrollPane(pnlCenter,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+		pnlCenter.setLayout(new ModifiedFlowLayout());
+		scrCenter = new JScrollPane(pnlCenter);
 		scrCenter.getViewport().setBackground(Color.white);
-		scrCenter.setPreferredSize(new Dimension(res.width/3, 650));
+		scrCenter.setPreferredSize(new Dimension(640, 650));
 		JPanel p = new JPanel(new BorderLayout());
 		pnl_c_c.add(pnlNorth,"North");
 		pnl_c_c.add(scrCenter,"Center");

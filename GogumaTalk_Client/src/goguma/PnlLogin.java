@@ -16,6 +16,7 @@ import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -39,6 +40,8 @@ public class PnlLogin extends PnlDefault implements ActionListener, KeyListener{
 	ImageIcon iconLogo;
 
 	Dialog_SignUp dialog_SignUp;
+	
+
 
 	PnlLogin() {
 

@@ -56,7 +56,6 @@ public class ServerMsg {
 	private void recvImg() {
 		// TODO Auto-generated method stub
 
-		System.out.println("이미지 받은 준비");
 		try {
 			DataFormat df = (DataFormat) Main.soket.ois.readObject();
 			PnlChatRoom.privateEmoticon(PnlChatRoom.lbFriendName.getText(), df.getImg());
@@ -190,6 +189,8 @@ public class ServerMsg {
 	private void alarm(String s) {
 		
 		String[] tempSplit = s.split(" ", 2);
+		
+		Dialog_ViewAnn.addMsg("Announcement: " + tempSplit[1], Color.red);
 
 		Main.alarm.setText(tempSplit[1]);
 		Main.alarm.setForeground(Color.orange);

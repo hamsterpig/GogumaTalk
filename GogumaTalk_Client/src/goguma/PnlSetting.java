@@ -23,6 +23,7 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 	boolean isGoguma, isKakao, isMelon;
 	
 	Dialog_ViewAnn dialog_ViewAnn;
+	ManagerColor colorManager = ManagerColor.getInstance();
 	
 	PnlSetting(){
 		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
@@ -266,6 +267,13 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 		
 			btn.setText("O");
 			btn.setBackground(new Color(200,255,200));
+			if(btn == btnGoguma) {
+				Main.colorTheme = colorManager.violet;
+				Main.pnl_Profile.setTheme(Main.colorTheme);
+			} else if(btn == btnKakao) {
+				Main.colorTheme = colorManager.kakao;
+				Main.pnl_Profile.setTheme(Main.colorTheme);
+			}
 		}
 	}
 

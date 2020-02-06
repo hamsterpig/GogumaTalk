@@ -43,7 +43,7 @@ public class PnlDefault extends JPanel{
 	}
 	
 	private void setTheme(Color c) { // TODO Auto-generated method stub
-		this.setBackground(c);
+		//this.setBackground(c);
 		
 		pnl_North.setBackground(c);
 		pnl_South.setBackground(c);
