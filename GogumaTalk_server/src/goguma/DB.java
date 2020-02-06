@@ -1,15 +1,25 @@
 package goguma;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
+
 
 public class DB {
 	private static DB instance;
@@ -22,6 +32,7 @@ public class DB {
 	private PrintWriter pwMember, pwFriend;
 	private Hashmap hm;
 	private HashMap openRoom;
+	private HashMap objectHM;
 	private DB(){
 		
 		hm = hm.getInstance();
@@ -31,6 +42,7 @@ public class DB {
 		privateChatList = new HashMap<String, ArrayList<String>>();
 		//openRoom = new HashMap<String, ArrayList>();
 		openRoom = OpenRoom.getInstance();
+		objectHM = new HashMap<String, ObjectOutputStream>();
 		try {
 			brMember = new BufferedReader(new FileReader("profile/member.txt"));
 			brFriend = new BufferedReader(new FileReader("profile/friends.txt"));
@@ -93,7 +105,7 @@ public class DB {
 		}
 	}
 	
-	public boolean logIn(String id, String pw, PrintWriter printWriter, String ip) {
+	public boolean logIn(String id, String pw, PrintWriter printWriter, ObjectOutputStream oos, String ip) {
 				String str = null;
 				try {
 					brMember = new BufferedReader(new FileReader("profile/member.txt"));
@@ -105,6 +117,9 @@ public class DB {
 									System.out.println(hm.get(id));
 									synchronized (hm) {
 										hm.put(id, printWriter);
+									}
+									synchronized (objectHM) {
+										objectHM.put(id, oos);
 									}
 									serverUI.insertUser(id, ip);
 									printWriter.println("/possible");
@@ -430,6 +445,11 @@ public class DB {
 				}
 			}
 		}
+		synchronized (objectHM) {
+			if(objectHM.containsKey(id)){
+				objectHM.remove(id);
+			}
+		}
 		printWriter.println("/quit");
 		printWriter.flush();
 		try {
@@ -441,7 +461,7 @@ public class DB {
 	}
 	
 	public void makeRoom(String line, PrintWriter printWriter) {
-		System.out.println(line);
+		//System.out.println(line);
 		String str[] = line.split("㈛");
 		//방제목 비밀번호 인원수
 		System.out.println("방을 만들었습니다. 제목 : "+str[1]+" 이미지 번호 : "+str[2]+" 비밀번호 : "+
@@ -466,36 +486,33 @@ public class DB {
 				roomArr.add(list);
 				openRoom.put(title, roomArr);	
 				String tempStr = "/okMakeRoom ㈛"+str[1]+"㈛"+str[2]+"㈛"+str[3]+"㈛"+str[4]+"㈛"+str[5];
-				printWriter.println(tempStr);
-				printWriter.flush();	
-				serverUI.editOpenChat(title, pw, "1/"+max, true);
+				//printWriter.println(tempStr);
+				//printWriter.flush();	
+				serverUI.insertOpenChat(title, pw, "0/"+max, true);
 				SprayChatRoom(title,tempStr);
 			}		
 		}		
 	}
 	public void SprayChatRoom(String title, String tempStr){
 		synchronized (openRoom) {
-			if(openRoom.containsKey(title)){
-				ArrayList tempArr = (ArrayList) openRoom.get(title);
-				if(tempArr.get(5) != null){
-					ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);
-					synchronized (hm) {
-						Iterator<String> mapIter = hm.keySet().iterator();
-						PrintWriter printWriter = null;
-						while(mapIter.hasNext()){
-							String key = mapIter.next();													 
-							if(hm.get(key) != null){											
-								printWriter = (PrintWriter) hm.get(key);
-								printWriter.println(tempStr);
-								printWriter.flush();
-								printWriter.println("/updateOpenChat");
-								printWriter.flush();
-							}							
-						}
+							
+				synchronized (hm) {
+					Iterator<String> mapIter = hm.keySet().iterator();
+					PrintWriter printWriter = null;
+					while(mapIter.hasNext()){
+						String key = mapIter.next();													 
+						if(hm.get(key) != null){											
+							printWriter = (PrintWriter) hm.get(key);
+							printWriter.println(tempStr);
+							printWriter.flush();
+							printWriter.println("/updateOpenChat");
+							printWriter.flush();
+						}							
 					}
 				}
+			
 				
-			}
+			
 		}
 		
 	}
@@ -510,21 +527,72 @@ public class DB {
 				String maximum = (String)tempArr.get(3);
 				int tempInt = Integer.parseInt((String)tempArr.get(3));
 				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);				
-				if((tempInt<=tempList.size()) && !(tempList.contains(id))){
-					synchronized (hm) {
-						PrintWriter printWriter = (PrintWriter) hm.get(id);
-						printWriter.println("/accessFail");
-						printWriter.flush();
-					}
-				}else{
-					tempList.add(id);
+				if((tempInt>tempList.size()) && !(tempList.contains(id))){
+					System.out.println("여기 안들어온듯");
 					synchronized (hm) {
 						PrintWriter printWriter = (PrintWriter) hm.get(id);
 						printWriter.println("/accessSuccess");
 						printWriter.flush();
 					}
-					maximum = (tempList.size()+1)+"/"+maximum;
-					serverUI.openChatTableUpdate(title, maximum);
+					tempList.add(id);
+				}else{					
+					System.out.println("여긴가");
+					synchronized (hm) {
+						PrintWriter printWriter = (PrintWriter) hm.get(id);
+						printWriter.println("/accessFail");
+						printWriter.flush();
+					}
+					
+				}
+				maximum = (tempList.size())+"/"+maximum;
+				System.out.println("accessRoom_maximum : "+maximum);
+				serverUI.openChatTableUpdate(title, maximum);
+			}
+		}
+	}
+	public void outRoom(String id, String line){
+		String str[] = line.split(" ",2);
+		String title = str[1];
+		synchronized (openRoom) {
+			if(openRoom.containsKey(title)){
+				ArrayList tempArr = (ArrayList) openRoom.get(title);
+				String maximum = (String)tempArr.get(3);
+				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);	
+				tempList.remove(id);
+				maximum = (tempList.size())+"/"+maximum;
+				System.out.println("outRoom_maximum : "+maximum);
+				serverUI.openChatTableUpdate(title, maximum);
+			}
+		}
+	}
+	
+	public void deleteRoom(String id, String line){
+		String str[] = line.split(" ",2);
+		String title = str[1];
+		System.out.println("오픈 채팅방을 삭제합니다. 요청자 ID : "+id+" 대상 방 이름 : "+title);
+		synchronized (openRoom) {
+			openRoom.remove(title);
+		}
+		serverUI.deleteOpenChat(title);
+	}
+	
+	public void sendMsgOpenChat(String id, String line){
+		String str[] = line.split("㈛");
+		String title = str[1];
+		String Msg = str[2];
+		System.out.println("오픈채팅방에 메세지를 보냅니다. 요청자 ID : "+id+"대상 방 이름 : "+title+"메세지 : "+Msg);
+		synchronized (openRoom) {
+			if(openRoom.containsKey(title)){
+				ArrayList tempArr = (ArrayList) openRoom.get(title);
+				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);
+				synchronized (hm) {
+					for(int i=0;i<tempList.size();i++){
+						if(hm.containsKey(tempList.get(i))){
+							PrintWriter printWriter =  (PrintWriter) hm.get(tempList.get(i));
+							printWriter.println("/o/from "+id+" "+Msg);
+							printWriter.flush();
+						}
+					}
 				}
 			}
 		}
@@ -550,6 +618,48 @@ public class DB {
 			}
 			
 		}
+	}
+	public void sendEmoticon(String id, String line, ObjectInputStream ois) {
+		String str[] = line.split(" ");
+		String target = str[1]; 
+		System.out.println("이미지를 보냅니다. 요청자 ID : "+id+" 대상자 : "+target);
+		DataFormat df;
+		try {
+			df = (DataFormat) ois.readObject();
+			 synchronized (objectHM) {
+				 ObjectOutputStream oos = (ObjectOutputStream) objectHM.get(target);
+				 synchronized (hm) {
+					PrintWriter printWriter = (PrintWriter) hm.get(target);
+					printWriter.println("/recvImg");
+					printWriter.flush();
+				}
+				 oos.writeObject(df);
+				 oos.flush();
+			}
+			/*String fileName = df.getFileName();
+	        ImageIcon icon = df.getImg();
+	        Image img = icon.getImage();
+	        BufferedImage bimg = new BufferedImage(img.getWidth(null),img.getHeight(null),BufferedImage.TYPE_INT_RGB);
+	        Graphics2D g2 = bimg.createGraphics();
+	        g2.drawImage(img, 0, 0, null);
+	        g2.dispose();
+	        System.out.println("서버에서 수신완료"+fileName);
+	        synchronized (objectHM) {
+				 ObjectOutputStream oos = (ObjectOutputStream) objectHM.get(target);
+				 oos.writeObject(bimg);
+				 oos.flush();
+			}*/
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+        
+        //ImageIO.write(bimg, "jpg", new File("img2/"+fileName));
+        
 	}
 	
 	

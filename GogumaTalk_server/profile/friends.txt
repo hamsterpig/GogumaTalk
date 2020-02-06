@@ -1,7 +1,7 @@
 yang/serverKing/copy/lemon/goock/serverKing3/hyonee
 test/test2
 lemon3
-pigg
+pigg/lemon
 test4
 test2/test
 test3
@@ -12,5 +12,5 @@ serverKing3/hyonee/lemon2/yang
 lemon2/serverKing3
 NewPigg
 serverKing/lemon/copy/yang/goock/hyonee/serverKing2
-lemon/yang/hyonee/serverKing
 copy/serverKing/yang
+lemon/yang/hyonee/serverKing/pigg

@@ -6,6 +6,8 @@ import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
 import java.net.ServerSocket;
@@ -54,13 +56,13 @@ public class ChatServer {
 		private String id;
 		private String pw;
 		private String ip;
-		private String idstr[];
 		private BufferedReader br;
 		private PrintWriter printWriter;
 		private HashMap<String,PrintWriter> hm;
-		private boolean initFlag = false;
 		private boolean dupleFlag = false;
 		private DB dataBase;
+		private ObjectOutputStream oos;
+		private ObjectInputStream ois;
 		
 		public ChatThread(Socket sock, HashMap<String,PrintWriter> hm){
 			dataBase = DB.getInstance();
@@ -71,6 +73,9 @@ public class ChatServer {
 			try{
 				printWriter = new PrintWriter(new OutputStreamWriter(sock.getOutputStream()));
 				br = new BufferedReader(new InputStreamReader(sock.getInputStream()));
+				oos = new ObjectOutputStream(sock.getOutputStream());
+				ois = new ObjectInputStream(sock.getInputStream());
+				
 				id = br.readLine();
 				String str[] = id.split(" ", 3);
 				id = str[1];
@@ -81,14 +86,14 @@ public class ChatServer {
 				}else{
 					//broadcast(id +"님이 접속하였습니다.");					
 					System.out.println("서버에게 로그인을 요청합니다. id: "+id+" pw: "+pw);
-					dupleFlag = dataBase.logIn(id,pw,printWriter,ip);
+					dupleFlag = dataBase.logIn(id,pw,printWriter,oos,ip);
 				}
 			}catch(NullPointerException e1){
 				e1.printStackTrace();
 			}
 			catch(Exception ex){
 				System.out.println("server thread constructor: "+ex);
-				//ex.printStackTrace();
+				ex.printStackTrace();
 			}
 		}
 		
@@ -108,7 +113,7 @@ public class ChatServer {
 						id = str[1];
 						pw = str[2];
 						System.out.println("id: "+str[1]+" pw: "+str[2]+"로 서버에게 로그인을 요청합니다.");
-						dupleFlag = dataBase.logIn(str[1],str[2],printWriter,ip);
+						dupleFlag = dataBase.logIn(str[1],str[2],printWriter,oos,ip);
 					}
 					if(line.indexOf("/reg") == 0){//회원가입 요청
 						String str[] = line.split(" ");
@@ -140,12 +145,25 @@ public class ChatServer {
 						System.out.println("오픈채팅방을 만들길 요청합니다. 요청자 ID : "+id);
 						dataBase.makeRoom(line,printWriter);
 					}
-					if(line.indexOf("/access/room") == 0){//방 접근을 허가 받습니다.
+					if(line.indexOf("/access/room") == 0){//오픈 채팅방 접근을 허가 받습니다.
 						//System.out.println("오픈채팅방에 들어 가길 요청합니다. 요청자 ID : "+id);
 						dataBase.accessRoom(id, line);
 					}
+					if(line.indexOf("/out/room") == 0){//오픈 채팅방을 나갑니다.
+						//System.out.println("오픈채팅방에 들어 가길 요청합니다. 요청자 ID : "+id);
+						dataBase.outRoom(id, line);
+					}
+					if(line.indexOf("/delete/room") == 0){//오픈 채팅방 삭제 합니다.
+						dataBase.deleteRoom(id,line);
+					}
+					if(line.indexOf("/o/sendMsg") == 0){//오픈 채팅방에서 메세지를 보냅니다.
+						dataBase.sendMsgOpenChat(id,line);
+					}
 					if(line.indexOf("/sendMSG") == 0){//메세지 보내기						
 						dataBase.sendMSG(id, line);
+					}
+					if(line.indexOf("/sendEmoticon") == 0){//이모티콘 보내기
+						dataBase.sendEmoticon(id, line, ois);
 					}
 				}
 			}catch(Exception ex){

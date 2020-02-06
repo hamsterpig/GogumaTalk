@@ -163,22 +163,7 @@ public class ServerUI extends JFrame implements ActionListener{
 		roomColumn.addElement("Password");
 		roomColumn.addElement("PeopleNumber");
 		
-		
 		roomModel = new DefaultTableModel(roomColumn,0);
-		roomRow = new Vector<String>();
-		
-		roomRow.addElement("PlayChat");
-		roomRow.addElement("true");
-		roomRow.addElement("5/8");
-		
-		roomModel.addRow(roomRow);
-		roomRow = new Vector<String>();
-		
-		roomRow.addElement("We like the party");
-		roomRow.addElement("false");
-		roomRow.addElement("3/8");
-		roomModel.addRow(roomRow);
-		
 		roomTable = new JTable(roomModel) {
 			@Override
 			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -409,7 +394,7 @@ public class ServerUI extends JFrame implements ActionListener{
 			}			
 		}
 	}
-	public void editOpenChat(String title, String pw, String max, boolean state) {
+	public void insertOpenChat(String title, String pw, String max, boolean state) {
 		synchronized (roomTable) {
 			if(state == true) {
 				roomRow = new Vector<String>();			
@@ -417,6 +402,16 @@ public class ServerUI extends JFrame implements ActionListener{
 				roomRow.addElement(pw);
 				roomRow.addElement(max);			
 				roomModel.addRow(roomRow);
+			}
+		}
+	}
+	public void deleteOpenChat(String title){
+		if(roomTable.getRowCount() != 0) {
+			for(int i=0; i<roomTable.getRowCount();i++) {
+				if(title.equals((String)roomTable.getValueAt(i, 0))) {
+					roomModel.removeRow(i);
+					break;
+				}
 			}
 		}
 	}
