@@ -115,6 +115,7 @@ public class Main extends JFrame implements ActionListener, MouseListener {
 		recv.start();
 
 		pnlMenubar.addMouseListener(this);
+		setTitle("Goguma Talk");
 	}
 
 

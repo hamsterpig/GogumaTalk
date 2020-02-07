@@ -120,7 +120,7 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 		pnlTheme.add(lbTheme);
 		
 		JPanel pnlThemeOption = new JPanel();
-		pnlThemeOption.setBackground(new Color(230,230,255));
+		pnlThemeOption.setBackground(colorManager.violet_line);
 		JPanel pnlGoguma = new JPanel();
 		pnlGoguma.setBackground(Color.white);
 		JLabel lbGoguma = new JLabel("Goguma");
@@ -135,7 +135,7 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 		pnlGoguma.add(pnlThemeOption);
 		
 		JPanel pnlThemeOption2 = new JPanel();
-		pnlThemeOption2.setBackground(new Color(230,230,255));
+		pnlThemeOption2.setBackground(colorManager.kakao_line);
 		JPanel pnlKakao = new JPanel();
 		pnlKakao.setBackground(Color.white);
 		JLabel lbKakao = new JLabel("Kakao");
@@ -150,7 +150,7 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 		pnlKakao.add(pnlThemeOption2);
 		
 		JPanel pnlThemeOption3 = new JPanel();
-		pnlThemeOption3.setBackground(new Color(230,230,255));
+		pnlThemeOption3.setBackground(colorManager.melon_line);
 		JPanel pnlMelon = new JPanel();
 		pnlMelon.setBackground(Color.white);
 		JLabel lbMelon = new JLabel("Melon");
@@ -202,7 +202,22 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 		
 		
 		setOption();
-		
+		setTheme(Main.colorTheme);
+	}
+
+	void setTheme(Color c) {
+		// TODO Auto-generated method stub
+		this.setBackground(c);
+		lbSpace.setBackground(c);
+		pnlUnderMenu.setBackground(c);
+		pnl_North.setBackground(c);
+		pnl_South.setBackground(c);
+		pnl_c_c.setBackground(c);
+		pnl_Center.setBackground(c);
+		pnl_c_n.setBackground(c);
+		pnl_c_s.setBackground(c);
+		pnl_c_c.setBackground(c);
+		btnSetting.setBackground(c);
 	}
 
 	private void setOption() {
@@ -269,12 +284,24 @@ public class PnlSetting extends PnlSideBar implements ActionListener{
 			btn.setBackground(new Color(200,255,200));
 			if(btn == btnGoguma) {
 				Main.colorTheme = colorManager.violet;
-				Main.pnl_Profile.setTheme(Main.colorTheme);
+				setThemeAll(Main.colorTheme);
 			} else if(btn == btnKakao) {
 				Main.colorTheme = colorManager.kakao;
-				Main.pnl_Profile.setTheme(Main.colorTheme);
+				setThemeAll(Main.colorTheme);
+			} else if(btn == btnMelon){
+				Main.colorTheme = colorManager.melon;
+				setThemeAll(Main.colorTheme);
 			}
 		}
+	}
+
+	private void setThemeAll(Color c) {
+		// TODO Auto-generated method stub
+		Main.pnl_Profile.setTheme(c);
+		Main.pnl_Chat.setTheme(c);
+		Main.pnl_MultiChat.setTheme(c);
+		Main.pnl_Setting.setTheme(c);
+		Main.pnl_Login.setTheme(c);
 	}
 
 	private void btnAlarmClick(JButton btn) {

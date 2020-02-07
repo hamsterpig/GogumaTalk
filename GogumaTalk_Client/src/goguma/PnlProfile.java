@@ -198,10 +198,20 @@ public class PnlProfile extends PnlSideBar implements ActionListener {
 		pnlProfileLine.setBackground(c);
 		pnlMenu.setBackground(c);
 		pnlUnderMenu.setBackground(c);
-		super.setBackground(c);
+		pnl_South.setBackground(c);
+		pnl_c_c.setBackground(c);
+		pnl_Center.setBackground(c);
+		pnl_c_n.setBackground(c);
+		pnl_c_s.setBackground(c);
+		pnl_c_c.setBackground(c);
+		
 		
 		if(Main.colorTheme == colorManager.violet) {
-			pnl_North.setBackground(Color.black);
+			pnl_North.setBackground(new Color(140,120,130));
+		} else if(Main.colorTheme == colorManager.kakao){
+			pnl_North.setBackground(new Color(255,255,200));
+		} else if(Main.colorTheme == colorManager.melon){
+			pnl_North.setBackground(new Color(200,255,200));
 		}
 		
 	}
@@ -225,17 +235,11 @@ public class PnlProfile extends PnlSideBar implements ActionListener {
 	        if(returnVal == 0) {
 	            File file = jfc.getSelectedFile();
 	            try {
-					System.out.println("당신이 저장할 파일은 " + file.getCanonicalPath() + " 입니다.");
 					lbProfileImg.setIcon(Function.imageSetSize(new ImageIcon(file.getCanonicalPath()), 60, 60));
 				} catch (IOException e1) {
 					// TODO Auto-generated catch block
 					e1.printStackTrace();
 				}
-	         
-	            
-	             
-
-	             
 	        }
 		}
 	

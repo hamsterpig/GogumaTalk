@@ -10,12 +10,14 @@ import java.awt.event.KeyEvent;
 import java.awt.event.KeyListener;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
+import java.io.File;
 import java.io.IOException;
 
 import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import javax.swing.JButton;
 import javax.swing.JDialog;
+import javax.swing.JFileChooser;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -33,6 +35,8 @@ public class Dialog_Emoticon  extends JDialog implements ActionListener, MouseLi
 	String name = "";
 	
 	ManagerFont fontManeger = ManagerFont.getInstance();
+	
+	JFileChooser jfc;
 	
 	Dialog_Emoticon(){
 		pnl = new JPanel(new BorderLayout());
@@ -83,6 +87,20 @@ public class Dialog_Emoticon  extends JDialog implements ActionListener, MouseLi
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(e.getSource()==btnOk){
+			
+/*			jfc = new JFileChooser();
+			int returnVal = jfc.showSaveDialog(null);
+	        if(returnVal == 0) {
+	            File file = jfc.getSelectedFile();
+	            try {
+	            	Main.soket.toServ.println("/sendMSG " + file.getCanonicalPath() +" "+ Main.pnl_Profile.lbProfile.getText());
+	    			Main.soket.toServ.flush();
+				} catch (IOException e1) {
+					// TODO Auto-generated catch block
+					e1.printStackTrace();
+				}
+	        }*/
+			
 			this.setVisible(false);
 		}
 	}

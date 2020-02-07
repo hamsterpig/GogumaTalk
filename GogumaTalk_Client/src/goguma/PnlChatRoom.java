@@ -209,7 +209,6 @@ public class PnlChatRoom extends JPanel implements ActionListener,KeyListener{
 		tmp=id;
 	}
 	static void privateEmoticon(String id, ImageIcon image){
-		System.out.println("ddd");
 		//¿ÞÂÊ
 		lblYourImage = new JLabel(new ImageIcon("img/img5.png"));
 		lblYourImage.setPreferredSize(new Dimension(40,40));
@@ -299,7 +298,6 @@ public class PnlChatRoom extends JPanel implements ActionListener,KeyListener{
 	public void actionPerformed(ActionEvent e) {
 		// TODO Auto-generated method stub
 		if(btnExit==e.getSource()){
-			System.out.println("dd");
 			Main.changePnl(this, Main.pnl_Chat);
 						
 		}else if(btnFunction==e.getSource()){

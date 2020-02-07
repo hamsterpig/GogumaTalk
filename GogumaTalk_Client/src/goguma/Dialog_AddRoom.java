@@ -128,17 +128,17 @@ public class Dialog_AddRoom extends JDialog implements ItemListener,
 		if (e.getSource() == btnimg1) {
 			btnimg = "img/img3.png";
 		} else if (e.getSource() == btnimg2) {
-			btnimg = "2";
+			btnimg = "img/img10.png";
 		} else if (e.getSource() == btnimg3) {
-			btnimg = "3";
+			btnimg = "img/img8.png";
 		} else if (e.getSource() == btnimg4) {
-			btnimg = "4";
+			btnimg = "img/img7.png";
 		} else if (e.getSource() == btnimg5) {
-			btnimg = "5";
+			btnimg = "img/img9.png";
 		} else if (e.getSource() == btnimg6) {
-			btnimg = "6";
+			btnimg = "img/img11.png";
 		} else if (e.getSource() == btnimg7) {
-			btnimg = "7";
+			btnimg = "img/img12.png";
 		}
 
 		if (e.getSource() == btnAddRoom) {
@@ -153,10 +153,9 @@ public class Dialog_AddRoom extends JDialog implements ItemListener,
 			if(tfContents.getText().equals("")){
 				hashtag = "null";				
 			}
-			Main.soket.toServ.println("/make/room©Ì" + tfTitle.getText()+"©Ì"
-					+btnimg+"©Ì"+ pw +"©Ì" + slidMaxNum.getValue()+ "©Ì"+hashtag);
-					Main.soket.toServ.flush();
-					this.setVisible(false);
+			Main.soket.toServ.println("/make/room©Ì" + tfTitle.getText()+"©Ì"+btnimg+"©Ì"+ pw +"©Ì" + slidMaxNum.getValue()+ "©Ì"+hashtag);
+			Main.soket.toServ.flush();
+			this.setVisible(false);
 		}
 
 	}

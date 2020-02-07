@@ -36,13 +36,25 @@ public class ServerMsg {
 			case "/outSider": outSider(); break;	
 			case "/recvImg": recvImg(); break;
 			case "/o/from": fromUser(s); break;
-			//case "/accessFail": accessfail(); break;
+			case "/accessSuccess": openChatIn(); break;
+			case "/accessFail": accessFail(); break;
+			case "/chatUserList" : refreshUser(s); break; 
 		}
 	} // process
 	
-	private void accessFail(String s){
+	private void refreshUser(String s){
+
+		Main.pnl_MultiChat.openChat.processUser(s);
+	}
+	
+	private void accessFail(){
 		
-		Main.pnl_MultiChat.processIn(s);
+		//Main.pnl_MultiChat.processIn(s);
+		
+	}
+	
+	private void openChatIn(){
+		Main.pnl_MultiChat.processIn();
 		
 	}
 
@@ -86,8 +98,8 @@ public class ServerMsg {
 
 	private void okMakeRoom(String s) {
 		// TODO Auto-generated method stub
-		String[] tempSplit = s.split("/okMakeRoom ");
-		Main.pnl_MultiChat.processMsg(tempSplit[1]);
+		//String[] tempSplit = s.split("/okMakeRoom ");
+		//Main.pnl_MultiChat.processMsg(tempSplit[1]);
 		
 		// ㈛제목㈛이미지번호㈛비밀번호㈛최대인원수㈛해시태그
 		
@@ -125,10 +137,12 @@ public class ServerMsg {
 		if(dialog_OffLineMsg==null){
 			dialog_OffLineMsg = new Dialog_OffLineMsg();
 			dialog_OffLineMsg.setVisible(true);
+			Main.changePnl(Main.pnl_ChatIn, Main.pnl_Chat);
 		} else{
 			Dialog_OffLineMsg.lbMSG.setText("You cannot talk because "+s+" is offline.");
 			Dialog_OffLineMsg.lbMSG.setForeground(Color.red);
 			dialog_OffLineMsg.setVisible(true);
+			Main.changePnl(Main.pnl_ChatIn, Main.pnl_Chat);
 		}
 	}
 

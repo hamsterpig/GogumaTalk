@@ -16,8 +16,9 @@ public class ManagerSocket {
 	//static final String IP = "192.168.100.220"; // g
 	//static final String IP = "192.168.100.211"; // j
 	//static final String IP = "192.168.100.45"; // j
-	//static final String IP = "192.168.100.170"; // my
-	static final String IP = "192.168.200.186"; // home
+	static final String IP = "192.168.100.170"; // my
+	//static final String IP = "192.168.200.186"; // home
+	//static final String IP = "192.168.100.16";
 	
 	private Socket sock;
 	public PrintWriter toServ;

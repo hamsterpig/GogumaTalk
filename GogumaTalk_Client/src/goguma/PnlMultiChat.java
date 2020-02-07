@@ -29,6 +29,7 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 	int arrayMax=8; // 방 최대 인원수
 	static int exitNum=0;
 	PnlOpenChat openChat;
+	int j=0;
 
 	PnlMultiChat(){
 
@@ -61,18 +62,32 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 		pnlNorth.add(btnAdd);
 		
 		pnlCenter = new JPanel();//
-		pnlCenter.setLayout(new ModifiedFlowLayout());
-		scrCenter = new JScrollPane(pnlCenter);
+		pnlCenter.setLayout(new FlowLayout(FlowLayout.LEADING));
+		pnlCenter.setPreferredSize(new Dimension(res.width/3,1200));
+		scrCenter = new JScrollPane(pnlCenter,JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED,JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
 		scrCenter.getViewport().setBackground(Color.white);
-		scrCenter.setPreferredSize(new Dimension(640, 650));
+		scrCenter.setPreferredSize(new Dimension(res.width/3, 650));
 		JPanel p = new JPanel(new BorderLayout());
 		pnl_c_c.add(pnlNorth,"North");
 		pnl_c_c.add(scrCenter,"Center");
 		
-		
-		
+		setTheme(Main.colorTheme);		
 	}
 	
+	void setTheme(Color c) {
+		// TODO Auto-generated method stub
+		this.setBackground(c);
+		lbSpace.setBackground(c);
+		pnlUnderMenu.setBackground(c);
+		pnl_North.setBackground(c);
+		pnl_South.setBackground(c);
+		pnl_c_c.setBackground(c);
+		pnl_Center.setBackground(c);
+		pnl_c_n.setBackground(c);
+		pnl_c_s.setBackground(c);
+		pnl_c_c.setBackground(c);
+		btnMultiChat.setBackground(c);
+	}
 
 	
 	public void addRoom(String title,String image,String password, String contents, int maxnum,int curnum){
@@ -88,6 +103,7 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 		if(e.getSource()==btnAdd){ //방 추가
 			
 			Dialog_AddRoom d = new Dialog_AddRoom(this,userId);
+			System.out.println("클라/방추가 요청 유저 : "+userId);
 			d.setVisible(true);
 
 		}else if(e.getSource()==btnFind){
@@ -106,7 +122,7 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 		//로비의 해당 방의 panel을 누르면 오픈챗방으로 들어가진다
 		
 		
-		int j=0;
+		j=0;
 		String pw="";
 		
 		for(int i=0;i<chatroom.size();i++){
@@ -122,11 +138,11 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 				Main.soket.toServ.println("/access/room " + chatroom.get(j).roomTitle + " null");
 				Main.soket.toServ.flush();
 				///
-				Main.pnl_MultiChat.pnl_c_c.removeAll();
+				/*Main.pnl_MultiChat.pnl_c_c.removeAll();
 				System.out.println("multichatroom/curnum : "+chatroom.get(j).curnum+" arraynum = "+chatroom.get(j).arraynum);
 				Main.pnl_MultiChat.pnl_c_c.add(openChat = new PnlOpenChat(this,arrayMax,j,userId,chatroom.get(j).arruser));
 				Main.pnl_MultiChat.pnl_c_c.revalidate();
-				Main.pnl_MultiChat.pnl_c_c.repaint();
+				Main.pnl_MultiChat.pnl_c_c.repaint();*/
 				
 				
 			}
@@ -164,21 +180,26 @@ public class PnlMultiChat extends PnlSideBar implements ActionListener,MouseList
 	public void processMsg(String str){//static
 		// ㈛제목㈛이미지번호㈛비밀번호㈛최대인원수㈛해시태그
 
-		
+		System.out.println("서버로부터 메세지를 받았다. ");
 		String[] roomInfo=str.split("㈛", 6);
 				
-		for(int i=0;i<roomInfo.length;i++){
+	/*	for(int i=0;i<roomInfo.length;i++){
 			System.out.println(i+": "+roomInfo[i]);
-		}
+		}*/
 				
-		System.out.println(str);
+		
 	
 
 		addRoom(roomInfo[1],roomInfo[2],roomInfo[3], roomInfo[5],Integer.parseInt(roomInfo[4]),0);
 
 	}
-	public void processIn(String s){
+	public void processIn(){
 		
+		Main.pnl_MultiChat.pnl_c_c.removeAll();
+		System.out.println("multichatroom/curnum : "+chatroom.get(j).curnum+" arraynum = "+chatroom.get(j).arraynum);
+		Main.pnl_MultiChat.pnl_c_c.add(openChat = new PnlOpenChat(this,arrayMax,j,userId,chatroom.get(j).arruser));
+		Main.pnl_MultiChat.pnl_c_c.revalidate();
+		Main.pnl_MultiChat.pnl_c_c.repaint();
 		
 	}
 }

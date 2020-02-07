@@ -29,6 +29,7 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 	ManagerFont fontManeger = ManagerFont.getInstance();
 	
 	Dialog_OffLineMsg(){
+		
 		pnl = new JPanel(new BorderLayout());
 		pnl_c = new JPanel();
 		pnl_n = new JPanel();
@@ -105,6 +106,8 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 		
 		txID_Check.addKeyListener(this);
 		txpass_Check.addKeyListener(this);
+		
+		
 	}
 	
 
@@ -132,6 +135,7 @@ public class Dialog_OffLineMsg  extends JDialog implements ActionListener, KeyLi
 			txID_Check.setText("");
 			txpass_Check.setText("");
 			this.setVisible(false);
+			Main.changePnl(Main.pnl_Chat, Main.pnl_Profile);
 		}
 	}
 

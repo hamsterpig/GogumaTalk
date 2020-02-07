@@ -4,6 +4,7 @@ import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
@@ -12,24 +13,24 @@ import java.awt.event.MouseMotionListener;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 
-public class PnlProfilePerson extends JPanel implements MouseListener{
+public class PnlProfilePerson extends JPanel implements MouseListener, MouseMotionListener{
 	JLabel lbIMG, lbLastMsg, lbName;
 	ManagerFont fontManager = ManagerFont.getInstance();
 	JLabel lbOnOff;
 	Dialog_ActionFriend dialog_DelFriend;
+	JPanel lbTLine, pnl_LastLine;
 	
 	String name = "";
+	String connect = "";
 	
 	static int personNum = 0;
-	int myNum;
+	int myNum, y;
+	Point LocationPoint;
 	PnlProfilePerson(){}
 	
 	PnlProfilePerson(String name, String connect) {
 		this.name = name;
-		
-		dialog_DelFriend = new Dialog_ActionFriend();
-
-		Dimension res = Toolkit.getDefaultToolkit().getScreenSize();
+		this.connect = connect;
 		
 		this.setPreferredSize(new Dimension(610, 83));
 		this.setBackground(new Color(200,200,200));
@@ -41,7 +42,7 @@ public class PnlProfilePerson extends JPanel implements MouseListener{
 		lbIMG.setBackground(new Color(240,240,240));
 		lbIMG.setOpaque(true);
 		
-		JPanel lbTLine = new JPanel();
+		lbTLine = new JPanel();
 		lbTLine.setLayout(new GridLayout(2,1));
 		lbTLine.setBackground(new Color(200,200,200));
 		
@@ -49,7 +50,7 @@ public class PnlProfilePerson extends JPanel implements MouseListener{
 		lbName.setText(name);
 		lbName.setFont(fontManager.CalibriBOLD30);
 		
-		JPanel pnl_LastLine = new JPanel();
+		pnl_LastLine = new JPanel();
 		pnl_LastLine.setOpaque(false);
 		
 		lbOnOff = new JLabel();
@@ -60,6 +61,24 @@ public class PnlProfilePerson extends JPanel implements MouseListener{
 		lbLastMsg.setFont(fontManager.CalibriPLAIN25);
 		
 		
+		pnl_LastLine.add(lbOnOff);
+		pnl_LastLine.add(lbLastMsg);
+		lbTLine.add(lbName);
+		lbTLine.add(pnl_LastLine);
+		
+		this.add(lbIMG);
+		this.add(lbTLine);
+		this.addMouseListener(this);
+		this.addMouseMotionListener(this);
+		
+		myNum = personNum;
+		personNum++;
+		
+		setThemeOnOff(connect);
+		}
+	private void setThemeOnOff(String connect) {
+		// TODO Auto-generated method stub
+		System.out.println("dddd");
 		if(connect.equals("true")){
 			lbOnOff.setForeground(Color.green);
 			lbLastMsg.setForeground(Color.blue);
@@ -72,30 +91,17 @@ public class PnlProfilePerson extends JPanel implements MouseListener{
 			lbLastMsg.setForeground(Color.gray);
 			lbLastMsg.setText("OffLine");
 		}
-		
-		
-		pnl_LastLine.add(lbOnOff);
-		pnl_LastLine.add(lbLastMsg);
-		lbTLine.add(lbName);
-		lbTLine.add(pnl_LastLine);
-		
-		this.add(lbIMG);
-		this.add(lbTLine);
-		this.addMouseListener(this);
-		
-		myNum = personNum;
-		personNum++;
-		
-		
-		}
+	}
+
 	@Override
-	public void mouseClicked(MouseEvent arg0) {
+	public void mouseClicked(MouseEvent e) {
 		// TODO Auto-generated method stub
 		if(dialog_DelFriend==null){
 			dialog_DelFriend = new Dialog_ActionFriend();
 			dialog_DelFriend.txID_Check.setText(name);
 			dialog_DelFriend.txID_Check.setFont(fontManager.GodicBOLD20);
 			dialog_DelFriend.setVisible(true);
+			dialog_DelFriend.setLocation(LocationPoint);
 		} else{
 			dialog_DelFriend.txID_Check.setText(name);
 			dialog_DelFriend.txID_Check.setFont(fontManager.GodicBOLD20);
@@ -105,23 +111,37 @@ public class PnlProfilePerson extends JPanel implements MouseListener{
 		
 	}
 	@Override
-	public void mouseEntered(MouseEvent arg0) {
+	public void mouseEntered(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void mouseExited(MouseEvent arg0) {
+	public void mouseExited(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void mousePressed(MouseEvent arg0) {
+	public void mousePressed(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
 	}
 	@Override
-	public void mouseReleased(MouseEvent arg0) {
+	public void mouseReleased(MouseEvent e) {
 		// TODO Auto-generated method stub
 		
+	}
+
+	@Override
+	public void mouseDragged(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public void mouseMoved(MouseEvent e) {
+		// TODO Auto-generated method stub
+		
+		LocationPoint = e.getLocationOnScreen();
+	
 	}
 }

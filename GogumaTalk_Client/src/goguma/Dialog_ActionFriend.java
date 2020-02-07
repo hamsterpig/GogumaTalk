@@ -31,6 +31,7 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 	ManagerFont fontManeger = ManagerFont.getInstance();
 	
 	Dialog_ActionFriend(){
+
 		pnl = new JPanel(new BorderLayout());
 		pnl_c = new JPanel();
 		pnl_n = new JPanel();
@@ -150,11 +151,24 @@ public class Dialog_ActionFriend  extends JDialog implements ActionListener, Key
 				lbMSG.setText("Do not enter ID !");
 				lbMSG.setForeground(Color.red);
 			} else {
+				int tempLocation = 0;
 				System.out.println("/make/privateChat " + txID_Check.getText());
 				socket.toServ.println("/make/privateChat " + txID_Check.getText());
 				socket.toServ.flush();
-				txID_Check.setText("");
 				
+				PnlChat.chatName = txID_Check.getText();
+				Main.changePnl(Main.pnl_Profile, Main.pnl_Chat);
+				Main.changePnl(Main.pnl_Chat, Main.pnl_ChatIn);
+/*				for(int i=0; i<PnlProfile.profilePerson.size(); i++){
+					if(PnlProfile.profilePerson.get(i).equals(txID_Check.getText())){
+						tempLocation = i;
+						break;
+					}
+					i++;
+				}*/
+				
+				
+				txID_Check.setText("");
 				this.setVisible(false);
 			}
 		}else if(e.getSource()==btnN){

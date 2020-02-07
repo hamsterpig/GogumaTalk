@@ -52,6 +52,22 @@ public class PnlChat extends PnlSideBar{
 		scList.setViewportView(pnlList); // scroll Panel
 		pnl_c_c.add(scList);
 		
+		setTheme(Main.colorTheme);
+	}
+	
+	void setTheme(Color c) {
+		// TODO Auto-generated method stub
+		this.setBackground(c);
+		lbSpace.setBackground(c);
+		pnlUnderMenu.setBackground(c);
+		pnl_North.setBackground(c);
+		pnl_South.setBackground(c);
+		pnl_c_c.setBackground(c);
+		pnl_Center.setBackground(c);
+		pnl_c_n.setBackground(c);
+		pnl_c_s.setBackground(c);
+		pnl_c_c.setBackground(c);
+		btnChat.setBackground(c);
 	}
 
 	public static void updateRoom() {

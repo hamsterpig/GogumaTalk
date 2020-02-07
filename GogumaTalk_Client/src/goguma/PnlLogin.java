@@ -69,7 +69,7 @@ public class PnlLogin extends PnlDefault implements ActionListener, KeyListener{
 		pnlSpace2.setPreferredSize(new Dimension(res.width, 50));
 		pnl_c_n.add(pnlSpace2);
 
-		iconLogo = new ImageIcon("img/logo.png");
+		iconLogo = new ImageIcon("img/GogumaC.png");
 		lbImg = new JLabel("Logo Img");
 		lbImg.setOpaque(false);
 		lbImg.setHorizontalAlignment(lbImg.CENTER);
@@ -200,7 +200,7 @@ public class PnlLogin extends PnlDefault implements ActionListener, KeyListener{
 		}
 	}
 
-	private void setTheme(Color c) { // TODO Auto-generated method stub
+	void setTheme(Color c) { // TODO Auto-generated method stub
 		this.setBackground(c);
 		pnl_s.setBackground(c);
 		pnl_c.setBackground(c);
