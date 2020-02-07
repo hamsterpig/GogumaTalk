@@ -4,9 +4,13 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.MenuItem;
+import java.awt.PopupMenu;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
+import java.awt.event.MouseEvent;
+import java.awt.event.MouseListener;
 import java.io.BufferedReader;
 import java.io.OutputStreamWriter;
 import java.io.PrintWriter;
@@ -22,19 +26,24 @@ import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JFrame;
 import javax.swing.JLabel;
+import javax.swing.JMenuItem;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.UIManager;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
+import javax.swing.event.PopupMenuEvent;
+import javax.swing.event.PopupMenuListener;
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 
 
 public class ServerUI extends JFrame implements ActionListener{
+	private static ServerUI instance;
 	private final int SERVER_CLOSE = 0;
 	private final int SERVER_PAUSE = 1;
 	private final int SERVER_START = 2;
@@ -57,17 +66,26 @@ public class ServerUI extends JFrame implements ActionListener{
 	private Thread clockTh;
 	private ThreadClock clock;
 	private int serverState;
-	private String serverIP;
-	//private Socket sock = null;
-	//private BufferedReader br = null;
-	//private PrintWriter pw = null;
-	private SocketManager2 sock= null;
+	private Hashmap hm;
+	private OpenRoom openRoom;
+	private PopupMenu pmn;
+	private MenuItem kick, miClose;
+	private JMenuItem item;
+	public static ServerUI getInstance(){
+		if(instance == null)
+			instance = new ServerUI();
+		return instance;
+	}
 	ServerUI(){
-		sock = SocketManager2.getInstance();
 		this.setSize(dimRes);
 		this.setResizable(false);
 		this.setTitle("GogumaServer");
 		serverState = SERVER_PAUSE;
+		
+		//MyHandler my = new MyHandler();
+		
+		
+		//pmn.show(this,200, 200);
 		//NorthPanel
 		pnlNorth = new JPanel();
 		pnlNorth.setLayout(new FlowLayout(FlowLayout.RIGHT,100,0));
@@ -154,24 +172,12 @@ public class ServerUI extends JFrame implements ActionListener{
 		
 		///////////////RoomTable
 		roomColumn = new Vector<String>();
-		roomColumn.addElement("RoomNumber");
+		
 		roomColumn.addElement("RoomName");
+		roomColumn.addElement("Password");
 		roomColumn.addElement("PeopleNumber");
 		
-		
 		roomModel = new DefaultTableModel(roomColumn,0);
-		roomRow = new Vector<String>();
-		roomRow.addElement("1");
-		roomRow.addElement("PlayChat");
-		roomRow.addElement("5/8");
-		
-		roomModel.addRow(roomRow);
-		roomRow = new Vector<String>();
-		roomRow.addElement("2");
-		roomRow.addElement("We like the party");
-		roomRow.addElement("3/8");
-		roomModel.addRow(roomRow);
-		
 		roomTable = new JTable(roomModel) {
 			@Override
 			public Component prepareRenderer(TableCellRenderer renderer, int row, int column) {
@@ -179,9 +185,13 @@ public class ServerUI extends JFrame implements ActionListener{
 				return component;
 			}
 		};
-		roomTable.addMouseListener(new MouseAdapter() {
-			//@Override
-		});
+		
+		JPopupMenu pmn = new JPopupMenu();
+		item = new JMenuItem("delete");
+		item.addActionListener(this);
+		pmn.add(item);
+		roomTable.setComponentPopupMenu(pmn);
+		
 		roomTable.setAlignmentX(CENTER_ALIGNMENT);
 	
 		JTableHeader header = roomTable.getTableHeader();
@@ -323,13 +333,11 @@ public class ServerUI extends JFrame implements ActionListener{
 		pnlBase.add(pnlLeft);
 		pnlBase.add(pnlRight);
 		
+		
 		this.add(pnlBase);
 		this.setVisible(true);
 	}
-	/*private DefaultTableModel DefaultTableModel(Vector<String> blackListColumn2, int i) {
-		// TODO Auto-generated method stub
-		return null;
-	}*/
+	
 	public void insertUser(String id, String ip){
 		userRow = new Vector<String>();
 		userRow.addElement(id);
@@ -346,6 +354,16 @@ public class ServerUI extends JFrame implements ActionListener{
 		}
 		return false;
 	}
+	public boolean existIP(String ip) {
+		if(userTable.getRowCount() != 0) {
+			for(int i=0; i<userTable.getRowCount();i++) {
+				if(ip.equals((String)userTable.getValueAt(i, 1))) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
 	public void tracking(String str) {
 		if(userTable.getRowCount() != 0) {
 			for(int i=0; i<userTable.getRowCount();i++) {
@@ -356,58 +374,83 @@ public class ServerUI extends JFrame implements ActionListener{
 			}
 		}
 	}
-	public void kickBackUser(String str) {
+	public void kickBackUser(String userName, boolean state) {
 		if(userTable.getRowCount() != 0) {
 			for(int i=0; i<userTable.getRowCount();i++) {
-				if(str.equals((String)userTable.getValueAt(i, 0))) {
+				if(userName.equals((String)userTable.getValueAt(i, 0))) {
 					jfIp.setText(null);
 					jfId.setText(null);
 					userModel.removeRow(i);
 					break;
 				}
 			}
-			synchronized (sock) {
-				try{
-					PrintWriter pw = (PrintWriter) sock.get(str);
-				
-					pw.println("/quit");//"/alarm "+
-					pw.println("서버로 부터 강퇴 되었습니다.^^");
-					
-					pw.flush();
-					pw.close();
-					sock.remove(str);
-				}catch(NullPointerException e){			
+			hm = Hashmap.getInstance();
+			if(hm.containsKey(userName)) {
+				System.out.println("마 여기가");
+				synchronized (hm) {
+					if(state == true){
+						PrintWriter printWriter = (PrintWriter) hm.get(userName);
+						printWriter.println("/alarm 서버로부터 강퇴되었습니다.");
+						printWriter.flush();
+						printWriter.println("/quit");
+						printWriter.flush();
+					}
+					hm.remove(userName);	
 				}
 			}
 		}
 	}
 	public void noticeMassage(String msg){
-		synchronized (sock) {
-			Collection<PrintWriter> collection = sock.values();
+		synchronized (hm) {
+			Collection<PrintWriter> collection = hm.values();
 			Iterator<PrintWriter> iter = collection.iterator();
 			while(iter.hasNext()){
-				PrintWriter pw = iter.next();
-				pw.println("/alarm "+msg);
-				pw.flush();
+				PrintWriter printWriter = iter.next();
+				printWriter.println("/alarm "+msg);
+				printWriter.flush();
 			}			
 		}
 	}
-		
-	public static void main(String[] args) {
-		// TODO Auto-generated method stub
-		try{
-			UIManager.setLookAndFeel
-			("javax.swing.plaf.nimbus.NimbusLookAndFeel");
-		}catch(Exception e){
-			System.out.println("ERROR");
+	
+	public void insertOpenChat(String title, String pw, String max, boolean state) {
+		synchronized (roomTable) {
+			if(state == true) {
+				roomRow = new Vector<String>();			
+				roomRow.addElement(title);
+				roomRow.addElement(pw);
+				roomRow.addElement(max);			
+				roomModel.addRow(roomRow);
+			}
 		}
-		new ServerUI();
 	}
+	public void deleteOpenChat(String title){
+		if(roomTable.getRowCount() != 0) {
+			for(int i=0; i<roomTable.getRowCount();i++) {
+				if(title.equals((String)roomTable.getValueAt(i, 0))) {
+					roomModel.removeRow(i);
+					break;
+				}
+			}
+		}
+	}
+	public void openChatTableUpdate(String title, String max) {
+		if(roomTable.getRowCount() != 0) {
+			for(int i=0; i<roomTable.getRowCount();i++) {
+				if(title.equals((String)roomTable.getValueAt(i, 0))) {
+					roomTable.setValueAt(max, i, 2);
+				}
+			}
+		}
+
+	}
+		
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if(e.getSource() == btnStart){
 			lblServerState.setForeground(Color.green);
 			serverState = SERVER_START;
+			System.out.println("되는감");
+			
 		}else if(e.getSource() == btnPause){
 			lblServerState.setForeground(Color.orange);
 			serverState = SERVER_PAUSE;
@@ -429,9 +472,21 @@ public class ServerUI extends JFrame implements ActionListener{
 		}////////////KickBack
 		else if(e.getSource() == btnKickback){
 			String str = jfId.getText();
-			kickBackUser(str);		
+			kickBackUser(str,true);		
+		}else if(e.getSource() == item){
+			System.out.println("ssss");
 		}
 			
 	}
-
+	public static void main(String[] args) {
+		// TODO Auto-generated method stub
+		try{
+			UIManager.setLookAndFeel
+			("javax.swing.plaf.nimbus.NimbusLookAndFeel");
+		}catch(Exception e){
+			System.out.println("ERROR");
+		}
+		Thread th = new ChatServer();
+		th.start();
+	}
 }

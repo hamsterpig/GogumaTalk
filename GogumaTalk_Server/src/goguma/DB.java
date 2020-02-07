@@ -1,15 +1,25 @@
 package goguma;
 
+import java.awt.Graphics2D;
+import java.awt.Image;
+import java.awt.image.BufferedImage;
 import java.io.BufferedReader;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
 import java.io.PrintWriter;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Iterator;
+
+import javax.imageio.ImageIO;
+import javax.swing.ImageIcon;
+
+
 
 public class DB {
 	private static DB instance;
@@ -17,17 +27,22 @@ public class DB {
 	private ArrayList<String> usersList;
 	private ArrayList<String> friendList;
 	private HashMap<String, ArrayList<String>> userList;
+	private HashMap<String, ArrayList<String>> privateChatList;
 	private BufferedReader brMember,brFriend;
 	private PrintWriter pwMember, pwFriend;
 	private Hashmap hm;
-	private HashMap roomHashMap;
+	private HashMap openRoom;
+	private HashMap objectHM;
 	private DB(){
 		
 		hm = hm.getInstance();
 		serverUI = serverUI.getInstance();
 		friendList = new ArrayList<String>(30);
 		userList = new HashMap<String, ArrayList<String>>();
-		roomHashMap = new HashMap<String, String>();
+		privateChatList = new HashMap<String, ArrayList<String>>();
+		//openRoom = new HashMap<String, ArrayList>();
+		openRoom = OpenRoom.getInstance();
+		objectHM = new HashMap<String, ObjectOutputStream>();
 		try {
 			brMember = new BufferedReader(new FileReader("profile/member.txt"));
 			brFriend = new BufferedReader(new FileReader("profile/friends.txt"));
@@ -54,8 +69,8 @@ public class DB {
 			while((str = brFriend.readLine())!=null){
 				ArrayList<String> tempArr = new ArrayList<String>();
 				String strArr[] = str.split("/");
-				for(int i=1;i<strArr.length;i++){
-					
+				System.out.println(strArr[0]);
+				for(int i=1;i<strArr.length;i++){					
 					tempArr.add(strArr[i]);
 				}
 				userList.put(strArr[0],tempArr);
@@ -82,15 +97,15 @@ public class DB {
 			}
 			pwMember.println(id+"/"+pw);
 			pwMember.flush();
-			pwFriend.println(id+"/");
+			pwFriend.println(id);
 			pwFriend.flush();
 			System.out.println("회원가입이 되었습니다.");
+			printWriter.flush();
+			printUserMap();
 		}
-		printWriter.flush();
-		printUserMap();
 	}
 	
-	public boolean logIn(String id, String pw, PrintWriter printWriter, String ip) {
+	public boolean logIn(String id, String pw, PrintWriter printWriter, ObjectOutputStream oos, String ip) {
 				String str = null;
 				try {
 					brMember = new BufferedReader(new FileReader("profile/member.txt"));
@@ -103,10 +118,32 @@ public class DB {
 									synchronized (hm) {
 										hm.put(id, printWriter);
 									}
+									synchronized (objectHM) {
+										objectHM.put(id, oos);
+									}
 									serverUI.insertUser(id, ip);
 									printWriter.println("/possible");
 									printWriter.flush();
 									System.out.println("로그인 성공!");
+									
+									synchronized (userList) {
+										if(userList.containsKey(id) && (userList.get(id) != null)) {
+											ArrayList<String> tempArr = userList.get(id);
+											PrintWriter tempPrintWriter;
+											for(int i=0; i<tempArr.size();i++) {
+												if(hm.containsKey(tempArr.get(i))) {
+													tempPrintWriter = (PrintWriter) hm.get(tempArr.get(i));
+													//tempPrintWriter.println("/userInfo "+id+" true");
+													//tempPrintWriter.flush();
+													tempPrintWriter.println("/userUpdate ");
+													tempPrintWriter.flush();
+													tempPrintWriter.println("/isOnline "+id+" true");
+													tempPrintWriter.flush();
+												}
+											}
+											
+										}
+									}
 									return false;
 								}else{
 									printWriter.println("/reduplication");
@@ -127,11 +164,10 @@ public class DB {
 	}
 	
 	public void sendFriendsList(String id, PrintWriter printWriter) {
-		if(userList.containsKey(id) && (userList.get(id) != null)){
+		if(userList.containsKey(id) && (userList.get(id) != null && !userList.get(id).isEmpty())){
 			ArrayList<String> tempArr = userList.get(id);
 				String isExist = null;
 				for(int i=0;i<tempArr.size();i++){
-					//System.out.print(tempArr.get(i)+" ");
 					synchronized (hm) {
 						if(hm.containsKey(tempArr.get(i))) {
 							isExist = "true";
@@ -143,37 +179,126 @@ public class DB {
 					printWriter.flush();
 				}
 			
+		}else{
+			printWriter.println("/outSider");
+			printWriter.flush();
 		}
 	
 	}	
 	
-	public void addFriend(String user, String line){
-		String str[] = line.split(" ", 2);
-		String addID = str[1];
+	public void editFriend(String user, String line, boolean editState){
+		String str[] = line.split(" ");
+		String targetID = str[1];
+		System.out.print("친구 수정을 합니다. 요청자 ID : "+user+" 대상자 : "+targetID);
+		if(editState == true){
+			System.out.println(" 추가");
+		}else{
+			System.out.println(" 삭제");
+		}
 		synchronized (userList) {
-			if(userList.containsKey(addID)){
-				ArrayList<String> tempArr = userList.get(user);
-				tempArr.add(addID);
-				tempArr = userList.get(addID);
-				tempArr.add(user);
-				updateFriends();
-				sendUpdateMessage(user, addID);
+			if(userList.containsKey(user) && userList.containsKey(targetID)){
+				ArrayList<String> tempArr; 
+				if(editState == true) { //상태가 추가
+					if(userList.get(user) != null){ 
+						tempArr = userList.get(user);		
+						if(!(tempArr.contains(targetID))){
+							if(!user.equals(targetID)){
+								tempArr.add(targetID);
+							}
+						}
+					}else{
+						tempArr = new ArrayList<String>();		
+						tempArr.add(targetID);
+					}
+					
+					if(userList.get(targetID) != null){
+						tempArr = userList.get(targetID);
+						if(!tempArr.contains(user)){
+							if(!targetID.equals(user)){
+								tempArr.add(user);
+							}
+						}
+					}else{
+						tempArr = new ArrayList<String>();
+						tempArr.add(user);
+					}			
+					updateFriends();
+					sendMassage(user, targetID,true);
+					//sendUpdateMessage(user, targetID, editState);
+					//sendUpdateMessage(targetID, editState);
+				}else {//상태가 삭제
+					System.out.println("삭제합니다~");
+					tempArr = userList.get(targetID);
+					tempArr.remove(user);
+					tempArr = userList.get(user);
+					tempArr.remove(targetID);
+					updateFriends();
+					sendMassage(user, targetID, false);
+				}
+				
 			};
 		}
 	}
-	
+
+	private void sendMassage(String user, String targetID, boolean state) {
+		System.out.println(""+state);
+		synchronized (hm) {
+			PrintWriter printWriter;
+			if(state == true){//추가
+				if(hm.containsKey(user)){				
+					printWriter = (PrintWriter) hm.get(user);
+					if(hm.containsKey(targetID)){
+						printWriter.println("/userInfo "+targetID+" true");
+					}else{
+						printWriter.println("/userInfo "+targetID+" false");
+					}				
+					printWriter.flush();
+				}
+				if(hm.containsKey(targetID)){
+					printWriter = (PrintWriter) hm.get(targetID);
+					if(hm.containsKey(user)){
+						printWriter.println("/userInfo "+user+" true");
+					}else{
+						printWriter.println("/userInfo "+user+" false");
+					}
+					printWriter.flush();		
+				}
+			}else{//삭제
+				if(hm.containsKey(user)){				
+					printWriter = (PrintWriter) hm.get(user);
+					if(hm.containsKey(targetID)){
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}else{
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}
+				}
+				if(hm.containsKey(targetID)){
+					printWriter = (PrintWriter) hm.get(targetID);
+					if(hm.containsKey(user)){
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}else{
+						printWriter.println("/userUpdate");
+						printWriter.flush();
+					}
+				}
+			}	
+		}
+	}
 	public void updateFriends(){
 			try {
 				pwFriend = new PrintWriter(new FileWriter(new File("profile/friends.txt")));
 				synchronized (userList) {
 					Iterator<String> mapIter = userList.keySet().iterator();
+					ArrayList<String> tempArr;
 					while(mapIter.hasNext()){
 						String key = mapIter.next();
-						ArrayList<String> tempArr = new ArrayList<String>();
-						 
+												 
 						if(userList.get(key) == null){
-							pwFriend.println(key+"/");							
-						}else{
+							pwFriend.println(key);							
+						}else{							
 							tempArr = userList.get(key);
 							pwFriend.print(key);
 							for(int i=0;i<tempArr.size();i++){
@@ -193,34 +318,40 @@ public class DB {
 		
 		
 	}
-	public void sendUpdateMessage(String userA, String userB){
+	public void sendUpdateMessage(String userA, String userB, boolean editSate){
+	//public void sendUpdateMessage(String userA, boolean editSate){
 		synchronized (hm) {
 			if(hm.containsKey(userA)){
 				PrintWriter printWriter = (PrintWriter) hm.get(userA);
-				shoot(userA, printWriter);
+				shoot(userA, printWriter, editSate);
 			}
 			if(hm.containsKey(userB)){
 				PrintWriter printWriter = (PrintWriter) hm.get(userB);
-				shoot(userB, printWriter);
+				shoot(userB, printWriter, editSate);
 			}
 		}
 	}
 	
-	public void shoot(String user, PrintWriter printWriter){
+	public void shoot(String user, PrintWriter printWriter, boolean editState){
 		if(userList.get(user) == null){
 			synchronized (userList) {
-					ArrayList<String> tempArr = new ArrayList<String>();
-					boolean isExist = false;
-					for(int i=0;i< tempArr.size(); i++){	
-						synchronized (hm) {
-							if(hm.containsKey(tempArr.get(i))){
-								isExist = true;
-							}
+				ArrayList<String> tempArr = new ArrayList<String>();
+				boolean isExist = false;
+				for(int i=0;i< tempArr.size(); i++){	
+					synchronized (hm) {
+						if(hm.containsKey(tempArr.get(i))){
+							isExist = true;
 						}
-						printWriter.println("/userInfo "+tempArr.get(i)+" "+isExist);
-						printWriter.flush();
-						isExist = false;
 					}
+					if(editState == true) {
+						printWriter.println("/userInfo "+tempArr.get(i)+" "+isExist);
+					}else {
+						printWriter.println("/userUpdate");
+		
+					}
+					printWriter.flush();
+					isExist = false;
+				}
 			}
 		}else{
 			synchronized (userList) {
@@ -233,25 +364,90 @@ public class DB {
 							isExist = true;
 						}
 				//	}
-					printWriter.println("/userInfo "+tempArr.get(temp)+" "+isExist);
+					if(editState == true) {
+						printWriter.println("/userInfo "+tempArr.get(temp)+" "+isExist);
+					}else {
+						printWriter.println("/userUpdate");
+					}
 					printWriter.flush();
 					isExist = false;
 				}
+			}
 		}
+	}
+	
+	public void makePrivteChat(String id, String line){
+		String str[] = line.split(" ");
+		String targetID = str[1];
+		System.out.println("1대1 채팅창을 만듭니다. 요청자 id : "+id+" 대상자 ID : "+targetID);
+		synchronized (hm) {
+			if(hm.containsKey(id) && hm.containsKey(targetID)){
+				PrintWriter printWriter = (PrintWriter) hm.get(id);
+				printWriter.println("/maked "+targetID);
+				printWriter.flush();
+				printWriter = (PrintWriter)hm.get(targetID);
+				printWriter.println("/maked "+id);
+				printWriter.flush();
+				//privateChat();
+			}else{
+				synchronized (hm) {
+					PrintWriter printWriter = (PrintWriter) hm.get(id);
+					printWriter.println("/targetOff "+targetID);
+					printWriter.flush();
+				}
+			}
+		}				
+	}
+	
+	public void sendMSG(String id, String line){
+		String str[] = line.split(" ",3);
+		String targetID = str[1];
+		String MSG = str[2];
+		System.out.println("메세지를 보냅니다. 요청자 ID : "+id+"대상자 ID : "+targetID);
+		synchronized (hm) {
+			if(hm.containsKey(id) && hm.containsKey(targetID)){
+				PrintWriter printWriter = (PrintWriter) hm.get(targetID);
+				printWriter.println("/recvMSG "+id+" "+MSG);
+				printWriter.flush();
+			}
 		}
 		
 	}
+	public void logOut(String id){
+		serverUI.kickBackUser(id,false);
+	}
 	public void userClose(String id, String ip, BufferedReader buffReader, PrintWriter printWriter, boolean dupleFlag) {		
-		System.out.println("userClose ID : "+id+" ip : "+ip);
+		System.out.println("종료합니다. ID : "+id+" ip : "+ip);
+		synchronized (userList) {
+			if(userList.containsKey(id) && (userList.get(id) != null)) {
+				ArrayList<String> tempArr = userList.get(id);
+				PrintWriter tempPrintWriter;
+				for(int i=0; i<tempArr.size();i++) {
+					if(hm.containsKey(tempArr.get(i))) {
+						tempPrintWriter = (PrintWriter) hm.get(tempArr.get(i));						
+						tempPrintWriter.println("/isOnline "+id+" false");
+						tempPrintWriter.flush();
+						tempPrintWriter.println("/userUpdate ");
+						tempPrintWriter.flush();
+					}
+				}
+				
+			}
+		}
 		synchronized (hm) {
 			if(hm.containsKey(id)) {
 				if(serverUI.existIP(ip)) {
 					if(dupleFlag == false) {
 						System.out.println(id+"님이 종료 되었습니다.");
-						serverUI.kickBackUser(id);
+						serverUI.kickBackUser(id,false);
 						hm.remove(id);
 					}
 				}
+			}
+		}
+		synchronized (objectHM) {
+			if(objectHM.containsKey(id)){
+				objectHM.remove(id);
 			}
 		}
 		printWriter.println("/quit");
@@ -264,17 +460,176 @@ public class DB {
 		}
 	}
 	
-	public void makeRoom(String line) {
-		System.out.println(line);
-		String str[] = line.split(" ", 4);
-		System.out.println(str[0]);
-		System.out.println(str[1]);
-		System.out.println(str[2]);
-		System.out.println(str[3]);
-		
+	public void makeRoom(String line, PrintWriter printWriter) {
+		//System.out.println(line);
+		String str[] = line.split("㈛");
+		//방제목 비밀번호 인원수
+		System.out.println("방을 만들었습니다. 제목 : "+str[1]+" 이미지 번호 : "+str[2]+" 비밀번호 : "+
+		str[3]+" 최대 인원수 : "+str[4]+	" 해시태그 : "+str[5]);
+		String title = str[1];
+		String imgNum = str[2];
+		String pw = str[3];
+		String max = str[4];
+		String hashtag = str[5];
+		synchronized (openRoom) {
+			if(openRoom.containsKey(title)){
+				printWriter.println("/noMakeRoom");
+				printWriter.flush();
+			}else{
+				ArrayList roomArr = new ArrayList();
+				roomArr.add(title);
+				roomArr.add(imgNum);
+				roomArr.add(pw);
+				roomArr.add(max);
+				roomArr.add(hashtag);
+				ArrayList<String> list = new ArrayList<String>();
+				roomArr.add(list);
+				openRoom.put(title, roomArr);	
+				String tempStr = "/okMakeRoom ㈛"+str[1]+"㈛"+str[2]+"㈛"+str[3]+"㈛"+str[4]+"㈛"+str[5];
+				//printWriter.println(tempStr);
+				//printWriter.flush();	
+				serverUI.insertOpenChat(title, pw, "0/"+max, true);
+				SprayChatRoom(title,tempStr);
+			}		
+		}		
+	}
+	public void SprayChatRoom(String title, String tempStr){
+		synchronized (openRoom) {
+							
+				synchronized (hm) {
+					Iterator<String> mapIter = hm.keySet().iterator();
+					PrintWriter printWriter = null;
+					while(mapIter.hasNext()){
+						String key = mapIter.next();													 
+						if(hm.get(key) != null){											
+							printWriter = (PrintWriter) hm.get(key);
+							printWriter.println(tempStr);
+							printWriter.flush();
+							printWriter.println("/updateOpenChat");
+							printWriter.flush();
+						}							
+					}
+				}
+		}
 		
 	}
+	public void accessRoom(String id, String line){
+		String str[] = line.split(" ",3);
+		String title = str[1];
+		String pw = str[2];
+		System.out.println("오픈채팅방에 들어 가길 요청합니다. 요청자 ID : "+id+" 대상 방 이름  : "+title);
+		synchronized (openRoom) {
+			if(openRoom.containsKey(title)){
+				ArrayList tempArr = (ArrayList) openRoom.get(title);
+				String maximum = (String)tempArr.get(3);
+				String password = (String)tempArr.get(2);
+				int tempInt = Integer.parseInt((String)tempArr.get(3));
+				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);
+				
+				if((tempInt>tempList.size()) && !(tempList.contains(id)) && (pw.equals(password))){
+					
+					synchronized (hm) {
+						PrintWriter printWriter = (PrintWriter) hm.get(id);
+						printWriter.println("/accessSuccess");
+						printWriter.flush();
+						//chatUserList userA userB ...(접근 가능시 클라이언트에게 리스트를 보냄)						
+					}
+					tempList.add(id);
+					synchronized (hm) {
+						if(!tempList.isEmpty()) {
+							PrintWriter printWriter = null;
+							String tempStr = "/chatUserList ";
+							for(int i=0;i<tempList.size();i++) {
+								tempStr+=(tempList.get(i)+" ");
+							}							
+							for(int i=0;i<tempList.size();i++) {								
+								printWriter = (PrintWriter) hm.get(tempList.get(i));
+								printWriter.println(tempStr);
+								printWriter.flush();
+							}							
+						}
+					}
+				}else{					
+					synchronized (hm) {
+						PrintWriter printWriter = (PrintWriter) hm.get(id);
+						printWriter.println("/accessFail");
+						printWriter.flush();
+					}
+					
+				}
+				maximum = (tempList.size())+"/"+maximum;
+				System.out.println("accessRoom_maximum : "+maximum);
+				serverUI.openChatTableUpdate(title, maximum);
+			}
+		}
+	}
+	public void outRoom(String id, String line){
+		String str[] = line.split(" ",2);
+		String title = str[1];
+		synchronized (openRoom) {
+			if(openRoom.containsKey(title)){
+				ArrayList tempArr = (ArrayList) openRoom.get(title);
+				String maximum = (String)tempArr.get(3);
+				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);	
+				tempList.remove(id);
+				maximum = (tempList.size())+"/"+maximum;
+				System.out.println("outRoom_maximum : "+maximum);
+				serverUI.openChatTableUpdate(title, maximum);
+				synchronized (hm) {
+					if(!tempList.isEmpty()) {
+						PrintWriter printWriter = null;
+						String tempStr = "/chatUserList ";
+						for(int i=0;i<tempList.size();i++) {
+							tempStr+=(tempList.get(i)+" ");
+						}							
+						for(int i=0;i<tempList.size();i++) {								
+							printWriter = (PrintWriter) hm.get(tempList.get(i));
+							printWriter.println(tempStr);
+							printWriter.flush();
+						}							
+					}
+				}
+			}
+			
+		}
+	}
+	
+	public void deleteRoom(String id, String line){
+		String str[] = line.split(" ",2);
+		String title = str[1];
+		System.out.println("오픈 채팅방을 삭제합니다. 요청자 ID : "+id+" 대상 방 이름 : "+title);
+		synchronized (openRoom) {
+			openRoom.remove(title);			
+		}
+		synchronized (hm) {
+			
+		}
+		serverUI.deleteOpenChat(title);
+	}
+	
+	public void sendMsgOpenChat(String id, String line){
+		String str[] = line.split("㈛");
+		String title = str[1];
+		String Msg = str[2];
+		System.out.println("오픈채팅방에 메세지를 보냅니다. 요청자 ID : "+id+"대상 방 이름 : "+title+"메세지 : "+Msg);
+		synchronized (openRoom) {
+			if(openRoom.containsKey(title)){
+				ArrayList tempArr = (ArrayList) openRoom.get(title);
+				ArrayList<String> tempList = (ArrayList<String>) tempArr.get(5);
+				synchronized (hm) {
+					for(int i=0;i<tempList.size();i++){
+						if(hm.containsKey(tempList.get(i))){
+							PrintWriter printWriter =  (PrintWriter) hm.get(tempList.get(i));
+							printWriter.println("/o/from "+id+" "+Msg);
+							printWriter.flush();
+						}
+					}
+				}
+			}
+		}
+	}
 	public void printUserMap(){
+		getAllUser();
 		Iterator<String> mapIter = userList.keySet().iterator();
 
 		while(mapIter.hasNext()){
@@ -295,10 +650,31 @@ public class DB {
 			
 		}
 	}
-	
-	
-	
-	
-	
+	public void sendEmoticon(String id, String line, ObjectInputStream ois) {
+		String str[] = line.split(" ");
+		String target = str[1]; 
+		System.out.println("이미지를 보냅니다. 요청자 ID : "+id+" 대상자 : "+target);
+		DataFormat df;
+		try {
+			df = (DataFormat) ois.readObject();
+			 synchronized (objectHM) {
+				 ObjectOutputStream oos = (ObjectOutputStream) objectHM.get(target);
+				 synchronized (hm) {
+					PrintWriter printWriter = (PrintWriter) hm.get(target);
+					printWriter.println("/recvImg");
+					printWriter.flush();
+				}
+				 oos.writeObject(df);
+				 oos.flush();
+			}
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+       
+	}
 	
 }
